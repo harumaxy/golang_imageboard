@@ -1,0 +1,12 @@
+GET http://localhost:8080/posts
+
+###
+POST  http://localhost:8080/posts
+Content-Type: application/json
+
+{
+    "title": "test",
+    "author": "max",
+    "description": "test",
+    "imagesrc": "none"
+}
