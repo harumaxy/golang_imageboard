@@ -14,7 +14,7 @@ var (
 )
 
 func Init() {
-	db, err := gorm.Open("postgres", `
+	db, err = gorm.Open("postgres", `
 	user=gorm 
 	password=gorm 
 	dbname=gorm
