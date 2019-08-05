@@ -10,5 +10,12 @@ type Post struct {
 	Author      string    `json:"author"`
 	Description string    `json:"description"`
 	ImageSrc    string    `json:"imagesrc"`
-	Comments    []Comment `json:"comments"`
+	Comments    []Comment `json:"comments" gorm:"foreignkey:PostID"`
+}
+
+type Comment struct {
+	gorm.Model
+	PostID uint   `json:"postid"`
+	Author string `json:"author"`
+	Body   string `json:"body"`
 }
