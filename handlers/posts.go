@@ -7,7 +7,7 @@ import (
 )
 
 // Post 使いやすいようstructをrename
-type Post models.Post
+type Post = models.Post
 
 // PostController CRUDメソッドを集約するstruct
 type PostController struct{}
@@ -18,11 +18,13 @@ func (pc PostController) Create() gin.HandlerFunc {
 		var p Post
 		if err := c.BindJSON(&p); err != nil {
 			handleError(c, err)
+			return
 		}
 
 		db := db.GetDB()
 		if err := db.Save(&p).Error; err != nil {
 			handleError(c, err)
+			return
 		}
 		c.JSON(201, p)
 	}
@@ -37,7 +39,11 @@ func (pc PostController) Read() gin.HandlerFunc {
 
 		if err := db.First(&p, id).Error; err != nil {
 			handleError(c, err)
+			return
 		}
+		var comments []Comment
+		db.Model(&p).Related(&comments)
+		p.Comments = comments
 		c.JSON(200, p)
 	}
 }
@@ -50,6 +56,7 @@ func (pc PostController) List() gin.HandlerFunc {
 
 		if err := db.Find(&list).Error; err != nil {
 			handleError(c, err)
+			return
 		}
 		c.JSON(200, list)
 	}
@@ -61,6 +68,7 @@ func (pc PostController) Update() gin.HandlerFunc {
 		var newp Post
 		if err := c.BindJSON(&newp); err != nil {
 			handleError(c, err)
+			return
 		}
 
 		var oldp Post
@@ -68,6 +76,7 @@ func (pc PostController) Update() gin.HandlerFunc {
 		id := c.Param("id")
 		if err := db.Find(&oldp, id).Error; err != nil {
 			handleError(c, err)
+			return
 		}
 
 		oldp.Title = newp.Title
@@ -75,6 +84,7 @@ func (pc PostController) Update() gin.HandlerFunc {
 		oldp.ImageSrc = newp.ImageSrc
 		if err := db.Save(&oldp).Error; err != nil {
 			handleError(c, err)
+			return
 		}
 		c.JSON(200, oldp)
 	}
@@ -88,9 +98,11 @@ func (pc PostController) Delete() gin.HandlerFunc {
 		var p Post
 		if err := db.First(&p, id).Error; err != nil {
 			handleError(c, err)
+			return
 		}
 		if err := db.Delete(&p).Error; err != nil {
 			handleError(c, err)
+			return
 		}
 		c.JSON(204, p)
 	}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/golang_imageboard/db"
 	"github.com/golang_imageboard/handlers"
 )
 
@@ -16,5 +17,15 @@ func main() {
 		posts.PUT("/:id", pc.Update())
 		posts.DELETE("/:id", pc.Delete())
 	}
-	r.Run()
+	comments := r.Group("posts/:id/comments")
+	{
+		cc := handlers.CommentController{}
+		comments.GET("", cc.List())
+		comments.POST("", cc.Create())
+		comments.PUT("/:commentID", cc.Update())
+		comments.DELETE("/:commentID", cc.Delete())
+	}
+	db.Init()
+	defer db.CloseDB()
+	r.Run(":8080")
 }
