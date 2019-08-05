@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang_imageboard/db"
 	"github.com/golang_imageboard/models"
@@ -15,21 +17,20 @@ type CommentController struct{}
 func (cc CommentController) Create() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var com Comment
-		if err := c.BindJSON(&com); err != nil {
-			handleError(c, err)
-		}
-
-		var p Post
 		id := c.Param("id")
-		db := db.GetDB()
-		if err := db.First(&p, id).Error; err != nil {
+		if err := c.BindJSON(&com); err != nil {
 			handleError(c, err)
 			return
 		}
 
-		p.Comments = append(p.Comments, com)
-
-		if err := db.Save(p).Error; err != nil {
+		postID, err := strconv.Atoi(id)
+		if err != nil {
+			handleError(c, err)
+			return
+		}
+		com.PostID = uint(postID)
+		db := db.GetDB()
+		if err := db.Save(&com).Error; err != nil {
 			handleError(c, err)
 			return
 		}
@@ -43,12 +44,17 @@ func (cc CommentController) List() gin.HandlerFunc {
 		db := db.GetDB()
 		id := c.Param("id")
 		var p Post
+		var comments []Comment
 		if err := db.First(&p, id).Error; err != nil {
 			handleError(c, err)
 			return
 		}
+		if err := db.Model(&p).Related(&comments).Error; err != nil {
+			handleError(c, err)
+			return
+		}
 
-		c.JSON(200, p.Comments)
+		c.JSON(200, comments)
 		return
 	}
 }
