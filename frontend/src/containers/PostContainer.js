@@ -19,7 +19,7 @@ const usePostContainer = ()=>{
 
     const fetch_single_post = async (postID) => {
         const res = await axios.get(`${API_ROOT}/posts/${postID}`)
-        const newPosts = {}
+        let newPosts = {}
         Object.assign(newPosts, posts)
         newPosts[postID] = res.data
         setPosts(newPosts)
