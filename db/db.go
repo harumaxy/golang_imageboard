@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang_imageboard/models"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var (
@@ -13,7 +14,7 @@ var (
 )
 
 func Init() {
-	db, err := gorm.Open(`
+	db, err = gorm.Open("postgres", `
 	user=gorm 
 	password=gorm 
 	dbname=gorm
@@ -30,6 +31,6 @@ func GetDB() *gorm.DB {
 	return db
 }
 
-func CloseDB() *gorm.DB {
+func CloseDB() {
 	db.Close()
 }
