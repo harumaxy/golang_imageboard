@@ -41,6 +41,9 @@ func (pc PostController) Read() gin.HandlerFunc {
 			handleError(c, err)
 			return
 		}
+		var comments []Comment
+		db.Model(&p).Related(&comments)
+		p.Comments = comments
 		c.JSON(200, p)
 	}
 }
