@@ -12,6 +12,7 @@ type Post models.Post
 // PostController CRUDメソッドを集約するstruct
 type PostController struct{}
 
+// Create クロージャーでPost作成のためのハンドラを返す
 func (pc PostController) Create() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var p Post
@@ -27,6 +28,7 @@ func (pc PostController) Create() gin.HandlerFunc {
 	}
 }
 
+// Read 1件のPostを返す
 func (pc PostController) Read() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var p Post
@@ -40,6 +42,7 @@ func (pc PostController) Read() gin.HandlerFunc {
 	}
 }
 
+// List 全件のPostをlistで返す
 func (pc PostController) List() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var list []Post
@@ -52,6 +55,7 @@ func (pc PostController) List() gin.HandlerFunc {
 	}
 }
 
+// Update タイトルと投稿者名と画像のurlを更新する
 func (pc PostController) Update() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var newp Post
@@ -76,6 +80,7 @@ func (pc PostController) Update() gin.HandlerFunc {
 	}
 }
 
+// Delete 投稿を消す
 func (pc PostController) Delete() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
