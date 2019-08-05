@@ -7,7 +7,7 @@ import (
 )
 
 // Post 使いやすいようstructをrename
-type Post models.Post
+type Post = models.Post
 
 // PostController CRUDメソッドを集約するstruct
 type PostController struct{}
