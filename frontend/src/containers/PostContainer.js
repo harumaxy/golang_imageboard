@@ -11,7 +11,10 @@ const usePostContainer = ()=>{
 
     const fetch_posts = async () => {
         const res = await axios.get(`${API_ROOT}/posts`)
-        setPosts({ posts : _.mapKeys(res.data) })
+        console.log(res.data);
+        console.log(_.mapKeys(res.data, "ID"));
+        
+        setPosts(_.mapKeys(res.data, "ID"))
     }
 
     const fetch_single_post = async (postID) => {
@@ -19,7 +22,7 @@ const usePostContainer = ()=>{
         const newPosts = {}
         Object.assign(newPosts, posts)
         newPosts[postID] = res.data
-        setPosts({ posts: newPosts })
+        setPosts(newPosts)
     }
 
     return {posts, fetch_posts, fetch_single_post}
