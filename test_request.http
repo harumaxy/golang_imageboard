@@ -10,3 +10,31 @@ Content-Type: application/json
     "description": "test",
     "imagesrc": "none"
 }
+
+
+###
+
+POST  http://localhost:8080/posts/1/comments
+Content-Type: application/json
+
+{
+   "author": "max_2",
+   "body" : "hello, comment"
+}
+
+###
+GET  http://localhost:8080/posts/1/comments
+
+###
+
+PUT  http://localhost:8080/posts/1/comments/1
+Content-Type: application/json
+
+{
+   "author": "update",
+   "body" : "hello, update"
+}
+
+###
+
+DELETE  http://localhost:8080/posts/1/comments/2
