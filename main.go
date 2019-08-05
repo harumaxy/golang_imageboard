@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang_imageboard/db"
 	"github.com/golang_imageboard/handlers"
@@ -8,6 +9,9 @@ import (
 
 func main() {
 	r := gin.Default()
+
+	r.Use(cors.Default())
+
 	posts := r.Group("/posts")
 	{
 		pc := handlers.PostController{}
