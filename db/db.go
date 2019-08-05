@@ -1,6 +1,9 @@
 package db
 
 import (
+	"log"
+
+	"github.com/golang_imageboard/models"
 	"github.com/jinzhu/gorm"
 )
 
@@ -10,5 +13,15 @@ var (
 )
 
 func Init() {
-	gorm.Open(`user= password= dbname= sslmode=`)
+	db, err := gorm.Open(`
+	user=gorm 
+	password=gorm 
+	dbname=gorm
+	sslmode=disable
+	`)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	db.AutoMigrate(&models.Post{})
+	db.AutoMigrate(&models.Comment{})
 }
