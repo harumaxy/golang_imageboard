@@ -30,6 +30,6 @@ func GetDB() *gorm.DB {
 	return db
 }
 
-func CloseDB() *gorm.DB {
+func CloseDB() {
 	db.Close()
 }
