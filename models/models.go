@@ -10,7 +10,7 @@ type Post struct {
 	Author      string    `json:"author"`
 	Description string    `json:"description"`
 	ImageSrc    string    `json:"image_src"`
-	Comments    []Comment `json:"comments" gorm:"foreignkey:PostID;association_foreignkey:PostID"`
+	Comments    []Comment `json:"comments" gorm:"foreignkey:PostID"`
 }
 
 type Comment struct {
