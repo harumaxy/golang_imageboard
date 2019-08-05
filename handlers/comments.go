@@ -14,6 +14,7 @@ type Comment = models.Comment
 // CommentController CRUDメソッドを集約するstruct
 type CommentController struct{}
 
+// Create Postに対してコメントを投稿
 func (cc CommentController) Create() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var com Comment
@@ -39,6 +40,7 @@ func (cc CommentController) Create() gin.HandlerFunc {
 	}
 }
 
+// List Comment一覧を取得
 func (cc CommentController) List() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		db := db.GetDB()
@@ -59,6 +61,7 @@ func (cc CommentController) List() gin.HandlerFunc {
 	}
 }
 
+// Update コメントを更新
 func (cc CommentController) Update() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var newCom Comment
@@ -83,6 +86,7 @@ func (cc CommentController) Update() gin.HandlerFunc {
 	}
 }
 
+// Delete コメントを削除
 func (cc CommentController) Delete() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var com Comment
