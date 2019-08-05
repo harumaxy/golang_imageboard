@@ -1,6 +1,10 @@
 GET http://localhost:8080/posts
 
 ###
+
+GET http://localhost:8080/posts/2
+
+###
 POST  http://localhost:8080/posts
 Content-Type: application/json
 
@@ -32,7 +36,7 @@ Content-Type: application/json
 
 {
    "author": "update",
-   "body" : "hello, update"
+   "body" : "update"
 }
 
 ###
