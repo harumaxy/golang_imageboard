@@ -25,3 +25,11 @@ func Init() {
 	db.AutoMigrate(&models.Post{})
 	db.AutoMigrate(&models.Comment{})
 }
+
+func GetDB() *gorm.DB {
+	return db
+}
+
+func CloseDB() *gorm.DB {
+	db.Close()
+}
