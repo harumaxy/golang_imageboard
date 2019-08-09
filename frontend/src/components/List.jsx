@@ -32,8 +32,8 @@ const LayoutGrid = (posts) => {
 }
 
 
-// Cardスタイル
-const LayoutCard = (posts) => {
+// GridTileスタイル
+const LayoutGridTile = (posts) => {
     return (
 
         <Paper>
