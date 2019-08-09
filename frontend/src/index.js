@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom';
 import {BrowserRouter as Router, Route, Switch, Link} from "react-router-dom"
 import * as serviceWorker from './serviceWorker';
 
+import { PostContainer } from "./containers/PostContainer";
+
 import List from "./components/List"
 import Create from "./components/Create"
 import Read from "./components/Read"
 
 ReactDOM.render(
-    <React.Fragment>
+    <PostContainer.Provider>
         <Router>
             <Switch>
                 <Route path="/posts/:id" component={Read}/>
@@ -18,7 +20,7 @@ ReactDOM.render(
             <p><Link to="">List</Link></p>
             <p><Link to="/posts/create">Create</Link></p>
         </Router>
-    </React.Fragment>
+    </PostContainer.Provider>
 
 , document.getElementById('root'));
 
