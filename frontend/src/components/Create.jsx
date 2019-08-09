@@ -1,6 +1,6 @@
 import React from "react"
 import axios from "axios"
-import { Button, TextField } from "@material-ui/core"
+import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl } from "@material-ui/core"
 
 
 
@@ -8,7 +8,7 @@ import { Button, TextField } from "@material-ui/core"
 
 const API_ROOT = "http://localhost:8080"
 
-export default class CreateForm extends React.Component {
+class CreateForm extends React.Component {
     state = {
         submitted: false,
         formData: {
@@ -20,10 +20,10 @@ export default class CreateForm extends React.Component {
     }
 
 
-    handleSubmit = async (event)=>{
+    handleSubmit = async (event) => {
         event.preventDefault()
-        this.setState({submitted: true})
-        const {formData} = this.state
+        this.setState({ submitted: true })
+        const { formData } = this.state
         const res = await axios.post(`${API_ROOT}/posts`, {
             title: formData.title,
             author: formData.author,
@@ -31,33 +31,41 @@ export default class CreateForm extends React.Component {
             image_src: formData.image_src
         })
         this.props.history.push(`${API_ROOT}/posts`)
-        
+
     }
-    handleChange = (event)=>{
-        const {formData} = this.state
+    handleChange = (event) => {
+        const { formData } = this.state
         formData[event.target.name] = event.target.value
         this.setState(formData)
     }
 
-    render = ()=> {
-        const {formData, submitted} = this.state
+    render = () => {
+        const { formData, submitted } = this.state
         return (
-            <form onSubmit={this.handleSubmit} autoComplete="off" >
+            <form onSubmit={this.handleSubmit} autoComplete="off" style={{margin: 20, width: "100%"}}>
+
+
                 <TextField
                     required
                     label="Title"
                     name="title"
                     onChange={this.handleChange}
                     value={this.state.formData.title}
+                    variant="outlined"
                 />
-                <br/>
+                <br />
+                <br />
+                
+
                 <TextField
                     label="Author"
                     name="author"
                     onChange={this.handleChange}
                     value={this.state.formData.author}
+                    variant="outlined"
                 />
-                <br/>
+                <br />
+                <br />
                 <TextField
                     label="Description"
                     name="description"
@@ -65,20 +73,38 @@ export default class CreateForm extends React.Component {
                     value={this.state.formData.description}
                     multiline
                     rows="4"
+                    fullWidth
+                    variant="outlined"
                 />
-                <br/>
+                <br />
+                <br />
                 <TextField
                     label="image_src"
                     name="image_src"
                     onChange={this.handleChange}
                     value={this.state.formData.image_src}
+                    variant="outlined"
+                    fullWidth
                 />
-                <br/>
+                <br />
+                <br />
                 <Button type="submit" variant="contained" color="primary" disabled={submitted}>
                     Submit
                 </Button>
             </form>
         )
-        }
-    
+    }
+
 }
+
+const layoutWrap = () => {
+    return (
+        <Paper>
+            <Grid container justify="flex-start">
+                <CreateForm />
+            </Grid>
+        </Paper>
+    )
+}
+
+export default layoutWrap
