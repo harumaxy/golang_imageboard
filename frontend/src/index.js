@@ -5,14 +5,15 @@ import * as serviceWorker from './serviceWorker';
 
 import List from "./components/List"
 import Create from "./components/Create"
-
+import Read from "./components/Read"
 
 ReactDOM.render(
     <React.Fragment>
         <Router>
             <Switch>
-                <Route path="/posts/create" component={Create}/>
-                <Route path="" component={List}/>
+                <Route path="/posts/:id" component={Read}/>
+                <Route path="/posts/create" exact component={Create}/>
+                <Route path="" exact component={List}/>
             </Switch>
             <p><Link to="">List</Link></p>
             <p><Link to="/posts/create">Create</Link></p>
