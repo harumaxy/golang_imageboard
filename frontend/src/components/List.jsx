@@ -73,8 +73,6 @@ const renderCard = (post) => (
 
 export default () => {
     return (
-        <PostContainer.Provider>
             <List />
-        </PostContainer.Provider>
     )
 }
