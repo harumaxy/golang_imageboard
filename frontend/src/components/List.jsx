@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { PostContainer } from "../containers/PostContainer"
 import _ from "lodash"
-import { Paper, Card, CardActionArea, CardMedia, CardContent, Typography, CardActions, Button, Container, GridList, GridListTile, ListSubheader, GridListTileBar, IconButton, Link } from "@material-ui/core";
+import { Paper, Card, CardActionArea, CardMedia, CardContent, Typography, CardActions, Button, Container, GridList, GridListTile, ListSubheader, GridListTileBar, IconButton, Link, Grid } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
 
 
@@ -15,34 +15,19 @@ const List = () => {
         fetch_posts()
     }, [])
     return (
-        LayoutCard(posts)
+        LayoutGrid(posts)
     )
 }
 
 const LayoutGrid = (posts) => {
     return (
-        <Paper>
-            <GridList cellHeight={300} cols={3}>
-                <GridListTile key="SubHeader" style={{ height: "auto" }} cols={3}>
-                    <ListSubheader component="div">Posts</ListSubheader>
-                </GridListTile>
-
-                {_.map(posts, (post) => (
-                    <GridListTile key={post.image_src}>
-                        <img src={post.image_src} alt={post.title} />
-                        <GridListTileBar
-                            title={post.title}
-                            subtitle={<span>by: {post.author}</span>}
-                            actionIcon={
-                                <IconButton aria-label={`info about ${post.title}`} style={{ color: "white" }}>
-                                    <InfoIcon />
-                                </IconButton>
-                            }
-                        />
-                    </GridListTile>
-                ))}
-            </GridList>
-        </Paper>
+        <Grid container spacing={2} >
+            {_.map(posts, (post) => (
+                <Grid item xs={12} sm={4}>
+                    {renderCard(post)}
+                </Grid>
+            ))}
+        </Grid>
     )
 }
 
