@@ -1,7 +1,9 @@
 import React, { useEffect } from "react"
 import { PostContainer } from "../containers/PostContainer"
 import _ from "lodash"
-import { Paper, Card, CardActionArea, CardMedia, CardContent, Typography, CardActions, Button, Container, GridList, GridListTile, ListSubheader, GridListTileBar, IconButton } from "@material-ui/core";
+import { Paper, Card, CardActionArea, CardMedia, CardContent, Typography, CardActions, Button, Container, GridList, GridListTile, ListSubheader, GridListTileBar, IconButton, Link } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
+
 
 import InfoIcon from "@material-ui/icons/Info";
 
@@ -48,29 +50,35 @@ const LayoutGrid = (posts) => {
 // Cardスタイル
 const LayoutCard = (posts) => {
     return (
+
         <Paper>
             <GridList cols={3} cellHeight="auto">
                 <GridListTile key="SubHeader" cols={3}>
                     <ListSubheader component="div">Posts</ListSubheader>
                 </GridListTile>
 
-                {_.map(posts, (post)=>(
+                {_.map(posts, (post) => (
                     <GridListTile cols={1}>
                         {renderCard(post)}
                     </GridListTile>
                 ))}
             </GridList>
         </Paper>
+
     )
 }
 
-const renderCard = (post)=>(
+const renderCard = (post) => (
     <Card>
         <CardContent>
-            <CardMedia image={dummy_img} component="img" alt={post.title}/>
-            <Typography gutterBottom variant="h5" component="h2">
-                {post.title}
-            </Typography>
+            <Link to={`/posts/${post.ID}`} component={RouterLink}>
+                <CardMedia image={post.image_src} component="img" alt={post.title} />
+            </Link>
+            <Link to={`/posts/${post.ID}`} component={RouterLink}>
+                <Typography gutterBottom variant="h5" component="h2">
+                    {post.title}
+                </Typography>
+            </Link>
             <Typography variant="body2" color="textSecondary" component="p">
                 {post.description || "nothing"}
             </Typography>
