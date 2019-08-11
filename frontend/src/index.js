@@ -13,10 +13,9 @@ ReactDOM.render(
     <PostContainer.Provider>
         <Router>
             <Switch>
-                <Route path="/posts/create" exact component={Create}/>
-                <Route path="" exact component={List}/>
-
-                <Route path="/posts/:id" component={Read}/>
+                <Route exact path="/posts/create" exact component={Create}/>
+                <Route exact path="/posts/:id" component={Read}/>
+                <Route exact path="" exact component={List}/>
             </Switch>
             <p><Link to="">List</Link></p>
             <p><Link to="/posts/create">Create</Link></p>
