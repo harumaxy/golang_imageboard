@@ -1,9 +1,10 @@
 package handlers
 
 import (
+	"golang_imageboard/db"
+	"golang_imageboard/models"
+
 	"github.com/gin-gonic/gin"
-	"github.com/golang_imageboard/db"
-	"github.com/golang_imageboard/models"
 )
 
 // Post 使いやすいようstructをrename

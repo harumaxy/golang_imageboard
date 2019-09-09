@@ -1,10 +1,11 @@
 package main
 
 import (
+	"golang_imageboard/db"
+	"golang_imageboard/handlers"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/golang_imageboard/db"
-	"github.com/golang_imageboard/handlers"
 )
 
 func main() {

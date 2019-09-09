@@ -3,7 +3,8 @@ package db
 import (
 	"log"
 
-	"github.com/golang_imageboard/models"
+	"golang_imageboard/models"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
