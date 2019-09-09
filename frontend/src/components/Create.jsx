@@ -50,7 +50,7 @@ class CreateForm extends React.Component {
             <Paper>
                 <Grid container justify="flex-start">
                     <form onSubmit={this.handleSubmit} autoComplete="off" style={{ margin: 20, width: "100%" }}>
-
+                        <h1>画像を投稿</h1>
 
                         <TextField
                             required
