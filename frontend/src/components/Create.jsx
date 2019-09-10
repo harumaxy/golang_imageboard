@@ -15,7 +15,8 @@ class CreateForm extends React.Component {
             title: "",
             author: "no name",
             description: "",
-            image_src: ""
+            image_src: "",
+            image_file: new Blob(),
         }
     }
 
@@ -29,19 +30,35 @@ class CreateForm extends React.Component {
         event.preventDefault()
         this.setState({ submitted: true })
         const { formData } = this.state
-        const res = await axios.post(`${API_ROOT}/posts`, {
-            title: formData.title,
-            author: formData.author,
-            description: formData.description,
-            image_src: formData.image_src
-        })
+        const submitData = new FormData()
+
+        submitData.append("title", formData.title)
+        submitData.append("author", formData.author)
+        submitData.append("description", formData.description)
+        submitData.append("image_src", formData.image_src)
+        submitData.append("upload", formData.image_file)
+        
+        const res = await axios.post(`${API_ROOT}/posts`, submitData,
+            {
+                headers: {
+                'content-type': 'multipart/form-data',
+            },
+          })
         this.history.push(`${API_ROOT}/posts`)
 
     }
     handleChange = (event) => {
         const { formData } = this.state
         formData[event.target.name] = event.target.value
+        if(event.target.name == "image_file"){
+            console.log(event.target.value);
+            
+        }
         this.setState(formData)
+    }
+    handleFileChange = (event, cb, filename)=>{
+        
+
     }
 
     render = () => {
@@ -49,7 +66,7 @@ class CreateForm extends React.Component {
         return (
             <Paper>
                 <Grid container justify="flex-start">
-                    <form onSubmit={this.handleSubmit} autoComplete="off" style={{ margin: 20, width: "100%" }}>
+                    <form encType="multipart/form-data"  onSubmit={this.handleSubmit} autoComplete="off" style={{ margin: 20, width: "100%" }}>
                         <h1>画像を投稿</h1>
 
                         <TextField
@@ -95,6 +112,8 @@ class CreateForm extends React.Component {
                         />
                         <br />
                         <br />
+                        <input type="file" name="image_file" value={this.state.image_file} onChange={this.handleChange} accept="image/*" />
+                        
                         <Button type="submit" variant="contained" color="primary" disabled={submitted}>
                             Submit
                 </Button>
