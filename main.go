@@ -30,6 +30,7 @@ func main() {
 		comments.PUT("/:commentID", cc.Update())
 		comments.DELETE("/:commentID", cc.Delete())
 	}
+	r.Static("/images", "./images")
 	db.Init()
 	defer db.CloseDB()
 	r.Run(":8080")
