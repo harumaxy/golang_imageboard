@@ -1,11 +1,18 @@
 package handlers
 
 import (
+	"encoding/json"
 	"golang_imageboard/db"
 	"golang_imageboard/models"
+	"io"
+	"os"
+	"path"
 
 	"github.com/gin-gonic/gin"
 )
+
+const imagePath = "./images"
+const staticRoot = "http://localhost:8080/images/"
 
 // Post 使いやすいようstructをrename
 type Post = models.Post
@@ -15,12 +22,23 @@ type PostController struct{}
 
 // Create クロージャーでPost作成のためのハンドラを返す
 func (pc PostController) Create() gin.HandlerFunc {
+	// Createリクエストは、投稿情報のjsonである"formData"と画像ファイル本体の"image"の2種類が
+	// multipart/form-dataで送られてくるものとする
 	return func(c *gin.Context) {
+		// 画像の保存
+		image, header, _ := c.Request.FormFile("image")
+		fileName := header.Filename
+		filePath := path.Join(imagePath, fileName)
+		saveFile, _ := os.Create(filePath)
+		defer saveFile.Close()
+		io.Copy(saveFile, image)
+
+		// jsonパース + Post作成
+		jsonStr := c.Request.FormValue("formData")
 		var p Post
-		if err := c.BindJSON(&p); err != nil {
-			handleError(c, err)
-			return
-		}
+		json.Unmarshal([]byte(jsonStr), &p)
+		// ImageSrcは、Staticルートから保存場所までのパス
+		p.ImageSrc = staticRoot + fileName
 
 		db := db.GetDB()
 		if err := db.Save(&p).Error; err != nil {
