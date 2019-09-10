@@ -9,6 +9,7 @@ import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl } fro
 const API_ROOT = "http://localhost:8080"
 
 class CreateForm extends React.Component {
+
     state = {
         submitted: false,
         formData: {
@@ -16,13 +17,13 @@ class CreateForm extends React.Component {
             author: "no name",
             description: "",
             image_src: "",
-            image_file: new Blob(),
-        }
+        },
     }
 
     constructor(props) {
         super(props)
         this.history = props.history
+        this.fileInput = React.createRef()
     }
 
 
@@ -32,34 +33,24 @@ class CreateForm extends React.Component {
         const { formData } = this.state
         const submitData = new FormData()
 
-        submitData.append("title", formData.title)
-        submitData.append("author", formData.author)
-        submitData.append("description", formData.description)
-        submitData.append("image_src", formData.image_src)
-        submitData.append("upload", formData.image_file)
-        
-        const res = await axios.post(`${API_ROOT}/posts`, submitData,
+        submitData.append("formData", JSON.stringify(formData))
+        submitData.append("image", this.fileInput.current.files[0])
+        console.log(this.fileInput.current.files[0])
+        await axios.post(`${API_ROOT}/posts`, submitData,
             {
                 headers: {
                 'content-type': 'multipart/form-data',
             },
           })
         this.history.push(`${API_ROOT}/posts`)
-
     }
     handleChange = (event) => {
         const { formData } = this.state
         formData[event.target.name] = event.target.value
-        if(event.target.name == "image_file"){
-            console.log(event.target.value);
-            
-        }
         this.setState(formData)
     }
-    handleFileChange = (event, cb, filename)=>{
-        
 
-    }
+    
 
     render = () => {
         const { formData, submitted } = this.state
@@ -112,7 +103,11 @@ class CreateForm extends React.Component {
                         />
                         <br />
                         <br />
-                        <input type="file" name="image_file" value={this.state.image_file} onChange={this.handleChange} accept="image/*" />
+                        <input type="file"
+                        name="image"
+                        ref={this.fileInput}
+                        accept="image/*"
+                        />
                         
                         <Button type="submit" variant="contained" color="primary" disabled={submitted}>
                             Submit
