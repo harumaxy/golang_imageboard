@@ -152,7 +152,7 @@ func saveImageToBucketObject(image io.Reader, fileName string) string {
 	// バケットオブジェクトを取得
 	bkt := client.Bucket(bucketname)
 	date := time.Now()
-	objName := fileName + date.String() // 名前が同じ画像が上書きされないように、dateを名前に足す
+	objName := date.String() + fileName // 名前が同じ画像が上書きされないように、dateを名前に足す
 	obj := bkt.Object(objName)
 	writer := obj.NewWriter(ctx)
 	// コピー
