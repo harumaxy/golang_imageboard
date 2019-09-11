@@ -36,7 +36,7 @@ const LayoutGrid = ({posts, offset, perPage}) => {
     console.log(posts);
     
     const begin = Object.keys(posts).length - offset
-    const range = _.filter(posts, (_, index)=>{return begin >= index && index > begin - perPage})
+    const range = _.filter(posts, (_, index)=>{return (begin >= index && index > begin - perPage)}).reverse()
 
 
     return (
