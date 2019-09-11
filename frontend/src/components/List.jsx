@@ -43,11 +43,11 @@ const LayoutGrid = ({posts, offset, perPage}) => {
         <Grid container spacing={2} >
             {_.map(range, (post) => {
                 return (
-                    <Grid item xs={12} sm={4} key={post.ID}>
-                        <Card>
+                    <Grid item xs={12} sm={4} key={post.ID} alignItems="stretch">
+                        <Card >
                             <CardContent>
                                 <Link to={`/posts/${post.ID}`} component={RouterLink}>
-                                    <CardMedia image={post.image_src} component="img" alt={post.title} />
+                                    <CardMedia image={post.image_src} component="img" alt={post.title} height={(window.innerHeight) / 4} />
                                 </Link>
                                 <Link to={`/posts/${post.ID}`} component={RouterLink}>
                                     <Typography gutterBottom variant="h5" component="h2">
