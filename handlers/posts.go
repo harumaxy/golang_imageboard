@@ -7,6 +7,9 @@ import (
 	"golang_imageboard/models"
 	"io"
 	"log"
+	"os"
+	"path"
+	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
@@ -14,7 +17,6 @@ import (
 
 const imagePath = "./images"
 const staticRoot = "http://localhost:8080/images/"
-const bucketname = "images8821"
 
 // Post 使いやすいようstructをrename
 type Post = models.Post
@@ -27,18 +29,18 @@ func (pc PostController) Create() gin.HandlerFunc {
 	// Createリクエストは、投稿情報のjsonである"formData"と画像ファイル本体の"image"の2種類が
 	// multipart/form-dataで送られてくるものとする
 	return func(c *gin.Context) {
+		image, header, _ := c.Request.FormFile("image")
+		fileName := header.Filename
 
 		// Todo : storageへのアップロード
-		saveImageToBucketObject(c)
+		imageSrc := saveImageToBucketObject(image, fileName)
 
-		_, header, _ := c.Request.FormFile("image")
-		fileName := header.Filename
 		// jsonパース + Post作成
 		jsonStr := c.Request.FormValue("formData")
 		var p Post
 		json.Unmarshal([]byte(jsonStr), &p)
 		// ImageSrcは、Staticルートから保存場所までのパス
-		p.ImageSrc = staticRoot + fileName
+		p.ImageSrc = imageSrc
 
 		db := db.GetDB()
 		if err := db.Save(&p).Error; err != nil {
@@ -133,23 +135,26 @@ func handleError(c *gin.Context, err error) {
 	})
 }
 
-func saveImageToBucketObject(c *gin.Context) {
-	// リクエストから画像の取得
-	image, header, _ := c.Request.FormFile("image")
-	fileName := header.Filename
+// saveImageToBucketObject : CloudStrageにファイルを保存して、image_srcを返す
+func saveImageToBucketObject(image io.Reader, fileName string) string {
+	const bucketname = "images8821"
+	if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./golang-imageboard-e2c34c26c97c.json"); err != nil {
+		log.Fatal(err)
+	}
 
 	// Cloud Storage クライアント作成
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
 	if err != nil {
-		// handleError(c, err)
-		return
+		log.Fatal(err)
+		return "client error"
 	}
 	// バケットオブジェクトを取得
 	bkt := client.Bucket(bucketname)
-	obj := bkt.Object(fileName)
+	date := time.Now()
+	objName := fileName + date.String() // 名前が同じ画像が上書きされないように、dateを名前に足す
+	obj := bkt.Object(objName)
 	writer := obj.NewWriter(ctx)
-
 	// コピー
 	if _, err := io.Copy(writer, image); err != nil {
 		log.Fatal("Cloud Strageへの保存が失敗")
@@ -157,5 +162,7 @@ func saveImageToBucketObject(c *gin.Context) {
 	if err := writer.Close(); err != nil {
 		log.Fatal("バケットオブジェクトのWriteを閉じるのに失敗")
 	}
+
+	return path.Join("https://storage.cloud.google.com/", bucketname, objName)
 
 }
