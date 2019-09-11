@@ -1,11 +1,22 @@
 package handlers
 
 import (
+	"context"
+	"encoding/json"
 	"golang_imageboard/db"
 	"golang_imageboard/models"
+	"io"
+	"log"
+	"os"
+	"path"
+	"time"
 
+	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
 )
+
+const imagePath = "./images"
+const staticRoot = "http://localhost:8080/images/"
 
 // Post 使いやすいようstructをrename
 type Post = models.Post
@@ -15,12 +26,21 @@ type PostController struct{}
 
 // Create クロージャーでPost作成のためのハンドラを返す
 func (pc PostController) Create() gin.HandlerFunc {
+	// Createリクエストは、投稿情報のjsonである"formData"と画像ファイル本体の"image"の2種類が
+	// multipart/form-dataで送られてくるものとする
 	return func(c *gin.Context) {
+		image, header, _ := c.Request.FormFile("image")
+		fileName := header.Filename
+
+		// Todo : storageへのアップロード
+		imageSrc := saveImageToBucketObject(image, fileName)
+
+		// jsonパース + Post作成
+		jsonStr := c.Request.FormValue("formData")
 		var p Post
-		if err := c.BindJSON(&p); err != nil {
-			handleError(c, err)
-			return
-		}
+		json.Unmarshal([]byte(jsonStr), &p)
+		// ImageSrcは、Staticルートから保存場所までのパス
+		p.ImageSrc = imageSrc
 
 		db := db.GetDB()
 		if err := db.Save(&p).Error; err != nil {
@@ -113,4 +133,36 @@ func handleError(c *gin.Context, err error) {
 	c.JSON(500, gin.H{
 		"message": err.Error(),
 	})
+}
+
+// saveImageToBucketObject : CloudStrageにファイルを保存して、image_srcを返す
+func saveImageToBucketObject(image io.Reader, fileName string) string {
+	const bucketname = "images8821"
+	if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./golang-imageboard-e2c34c26c97c.json"); err != nil {
+		log.Fatal(err)
+	}
+
+	// Cloud Storage クライアント作成
+	ctx := context.Background()
+	client, err := storage.NewClient(ctx)
+	if err != nil {
+		log.Fatal(err)
+		return "client error"
+	}
+	// バケットオブジェクトを取得
+	bkt := client.Bucket(bucketname)
+	date := time.Now()
+	objName := fileName + date.String() // 名前が同じ画像が上書きされないように、dateを名前に足す
+	obj := bkt.Object(objName)
+	writer := obj.NewWriter(ctx)
+	// コピー
+	if _, err := io.Copy(writer, image); err != nil {
+		log.Fatal("Cloud Strageへの保存が失敗")
+	}
+	if err := writer.Close(); err != nil {
+		log.Fatal("バケットオブジェクトのWriteを閉じるのに失敗")
+	}
+
+	return path.Join("https://storage.cloud.google.com/", bucketname, objName)
+
 }
