@@ -82,9 +82,9 @@ func InitMiddleware() {
 	godotenv.Load()
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			aud := os.Getenv("AUTH0_CLIENT_ID")
 
 			// aud を検証
+			aud := os.Getenv("AUTH0_CLIENT_ID")
 			checkAudience := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
 			if !checkAudience {
 				return token, errors.New("Invalid audience.")
