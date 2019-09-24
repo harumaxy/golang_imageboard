@@ -62,7 +62,8 @@ func getPemCert(token *jwt.Token) (string, error) {
 	return cert, nil
 }
 
-func AuthMiddleware() gin.HandlerFunc {
+func NewAuthMiddleware() gin.HandlerFunc {
+	initMiddleware()
 	return func(c *gin.Context) {
 		// Get the client secret key
 		err := globalJwtMiddleWare.CheckJWT(c.Writer, c.Request)
@@ -77,7 +78,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-func InitMiddleware() {
+func initMiddleware() {
 	// 環境変数をロードする
 	godotenv.Load()
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
@@ -111,8 +112,4 @@ func InitMiddleware() {
 	globalJwtMiddleWare = jwtMiddleware
 
 	// ... the rest of the code below this function doesn't change yet
-}
-
-func GetMiddleware() *jwtmiddleware.JWTMiddleware {
-	return globalJwtMiddleWare
 }
