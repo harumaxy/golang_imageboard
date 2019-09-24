@@ -8,16 +8,14 @@ import { IconButton, Avatar } from "@material-ui/core";
 const Lock = () => {
 
     const lock = new Auth0Lock(
-        "6bmuCVcM3yafc2vh2KJQ3P7rzhIMRHCt",
+        "3B4y2bgrI3Jiz5QxVGGXMOxHspYHNQvp",
         "max-project.auth0.com",
         {
             closable: true,
             auth: {
                 responseType: "token id_token",
                 sso: true,
-                redirectUrl: `${window.location.origin}/callback`
-
-
+                redirectUrl: `${window.location.origin}`
             },
 
         },
@@ -41,7 +39,7 @@ const Lock = () => {
         <>
             {isLoggedIn()? (
                 <IconButton>
-                    <Avatar srcSet={user_info.picture}/>
+                    <Avatar alt={user_info.nickname} srcSet={user_info.picture}/>
                 </IconButton>
                 
             ):(
