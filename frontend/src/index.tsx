@@ -8,7 +8,7 @@ import { PostContainer } from "./containers/PostContainer";
 import List from "./components/List"
 import Create from "./components/Create"
 import Read from "./components/Read"
-import Lock from './components/Lock';
+import Lock from './components/AuthButton';
 
 
 ReactDOM.render(
