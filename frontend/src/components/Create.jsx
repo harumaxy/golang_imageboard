@@ -36,6 +36,7 @@ class CreateForm extends React.Component {
             {
                 headers: {
                 'content-type': 'multipart/form-data',
+                "Authorization": `Bearer ${localStorage.getItem("id_token")}`,
             },
           })
         this.history.push(`${API_ROOT}/posts`)

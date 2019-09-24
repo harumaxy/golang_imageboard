@@ -9,11 +9,12 @@ import List from "./components/List"
 import Create from "./components/Create"
 import Read from "./components/Read"
 import Lock from './components/AuthButton';
+import AppBar from "./components/AppBar";
 
 
 ReactDOM.render(
     <PostContainer.Provider>
-        <Lock/>
+        <AppBar/>
         <Router>
             <Switch>
                 <Route exact path="/posts/create" component={Create}/>

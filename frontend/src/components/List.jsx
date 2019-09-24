@@ -21,6 +21,9 @@ export default  () => {
     return (
         <React.Fragment>
         <LayoutGrid posts={posts} offset={offset} perPage={perPage}/>
+        <br/>
+        <br/>
+        <br/>
         <Pagination
             limit={perPage}
             offset={offset}
