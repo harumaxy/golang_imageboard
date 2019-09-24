@@ -1,12 +1,8 @@
 import React from "react"
 import axios from "axios"
 import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl } from "@material-ui/core"
+import {API_ROOT} from "../setting"
 
-
-
-
-
-const API_ROOT = "http://localhost:8080"
 
 class CreateForm extends React.Component {
 
