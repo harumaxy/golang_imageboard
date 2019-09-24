@@ -3,8 +3,6 @@ import { Container, Grid , Typography, Hidden, Paper} from "@material-ui/core";
 import { PostContainer } from "../containers/PostContainer"
 
 const Read = (props) => {
-    console.log(props);
-    console.log(props.props);
 
 
     const { params } = props.match
