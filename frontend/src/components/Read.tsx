@@ -137,6 +137,7 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
 
     const handleSubmit: FormEventHandler = (e: FormEvent) => {
         e.preventDefault()
+        setBody("")
         Axios.post(`${API_ROOT}/posts/${post_id}/comments`,
             {
                 post_id: post_id,
@@ -149,7 +150,7 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
                 }
             }
         ).then(
-            () => { update() }
+            () => { update(); alert("submitted") }
         )
     }
 
