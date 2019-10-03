@@ -48,8 +48,9 @@ const Read = (props: any) => {
                     <Container>
                         <img src={post.image_src} alt={post.title} width="100%" />
                         <Typography variant="h4" component="h1">{post.title}</Typography>
-                        <Typography variant="subtitle1" component="h2">{post.author}</Typography>
-                        <Typography variant="body1" component="p" style={{ whiteSpace: "pre-line" }}>{post.description}</Typography>
+                        <Typography variant="h6" component="h2">Posted by {post.author}</Typography>
+                        <br />
+                        <Typography variant="body1" component="p" style={{ whiteSpace: "pre-line", paddingBottom: 10}}>{post.description}</Typography>
                         <Typography variant="srOnly">{post.image_src}</Typography>
                         <Typography variant="srOnly">{id}</Typography>
                     </Container>
