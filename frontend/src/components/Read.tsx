@@ -104,7 +104,7 @@ const CommentList: React.FC<CommentListProps> = (props: CommentListProps) => {
                     <>
                         <Grid container style={{ margin: 10 }}>
                             <Grid item xs={12} sm={6}>
-                                <Typography variant="h6">{com.ID}: {com.author}</Typography>
+                                <Typography variant="h6">{index + 1}: {com.author}</Typography>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Typography variant="body2">{com.CreatedAt}</Typography>
