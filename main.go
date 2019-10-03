@@ -36,7 +36,7 @@ func main() {
 	{
 		cc := handlers.CommentController{}
 		comments.GET("", cc.List())
-		comments.POST("", authMiddleware, cc.Create())
+		comments.POST("" /*, authMiddleware*/, cc.Create())
 		comments.PUT("/:commentID", authMiddleware, cc.Update())
 		comments.DELETE("/:commentID", authMiddleware, cc.Delete())
 	}
