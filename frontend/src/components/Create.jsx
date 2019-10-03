@@ -2,6 +2,7 @@ import React from "react"
 import axios from "axios"
 import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl } from "@material-ui/core"
 import {API_ROOT} from "../setting"
+import { isLoggedIn } from "../utils/isLoggedIn"
 
 
 class CreateForm extends React.Component {
@@ -20,6 +21,14 @@ class CreateForm extends React.Component {
         super(props)
         this.history = props.history
         this.fileInput = React.createRef()
+        if (isLoggedIn()){
+            const { formData } = this.state
+            formData["author"] = JSON.parse(localStorage.getItem("user_info")).name
+            this.setState(formData)
+            
+        }
+        
+        
     }
 
 
@@ -57,54 +66,20 @@ class CreateForm extends React.Component {
                     <form encType="multipart/form-data"  onSubmit={this.handleSubmit} autoComplete="off" style={{ margin: 20, width: "100%" }}>
                         <h1>画像を投稿</h1>
 
-                        <TextField
-                            required
-                            label="Title"
-                            name="title"
-                            onChange={this.handleChange}
-                            value={this.state.formData.title}
-                            variant="outlined"
-                        />
+                        <TextField required label="Title" name="title" onChange={this.handleChange} value={this.state.formData.title} variant="outlined" />
                         <br />
                         <br />
-
-
-                        <TextField
-                            label="Author"
-                            name="author"
-                            onChange={this.handleChange}
-                            value={this.state.formData.author}
-                            variant="outlined"
-                        />
+                        <TextField label="Author" name="author" onChange={this.handleChange} value={this.state.formData.author} variant="outlined"/>
                         <br />
                         <br />
-                        <TextField
-                            label="Description"
-                            name="description"
-                            onChange={this.handleChange}
-                            value={this.state.formData.description}
-                            multiline
-                            rows="4"
-                            fullWidth
-                            variant="outlined"
-                        />
+                        <TextField label="Description" name="description" onChange={this.handleChange} value={this.state.formData.description} multiline
+                            rows="4" fullWidth variant="outlined"/>
                         <br />
                         <br />
-                        <TextField
-                            label="image_src"
-                            name="image_src"
-                            onChange={this.handleChange}
-                            value={this.state.formData.image_src}
-                            variant="outlined"
-                            fullWidth
-                        />
+                        {/* <TextField label="image_src" name="image_src" onChange={this.handleChange} value={this.state.formData.image_src} variant="outlined" fullWidth/> */}
                         <br />
                         <br />
-                        <input type="file"
-                        name="image"
-                        ref={this.fileInput}
-                        accept="image/*"
-                        />
+                        <input type="file" name="image" ref={this.fileInput} accept="image/*" />
                         
                         <Button type="submit" variant="contained" color="primary" disabled={submitted}>
                             Submit
