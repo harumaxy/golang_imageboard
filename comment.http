@@ -12,3 +12,10 @@ Content-type: application/json
 # 	Body   string `json:"body"`
 # }
 
+### 
+GET http://localhost:8080/posts/1/comments HTTP/1.1
+
+###
+
+GET http://localhost:8080/posts HTTP/1.1
+
