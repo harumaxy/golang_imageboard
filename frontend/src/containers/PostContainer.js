@@ -2,9 +2,8 @@ import { useState } from "react"
 import { createContainer } from "unstated-next"
 import axios from "axios"
 import _ from "lodash"
+import {API_ROOT} from '../setting'
 
-
-const API_ROOT = "http://localhost:8080"
 
 const usePostContainer = ()=>{
     const [posts, setPosts] = useState({})
