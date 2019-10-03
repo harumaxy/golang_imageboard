@@ -171,14 +171,14 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <Grid container spacing={2} alignItems="center" style={{ padding: 10 }}>
-                    <Grid item xs={1}>
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item >
                         <Avatar
                             alt={user_info.name}
                             srcSet={user_info.picture}
                         />
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item style={{flexGrow: 1, margin: 10}}>
                         <TextField
                             label="comment"
                             name="body"
@@ -190,7 +190,7 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
                             variant="outlined"
                         />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item>
                         <Button type="submit" variant="contained" color="primary">
                             Submit
                         </Button>
