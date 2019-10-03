@@ -7,9 +7,10 @@ const Appbar = () => {
     return (
         <AppBar position="sticky">
             <Toolbar>
-                <Link to="/" component={RouterLink} color="inherit" variant="h6" style={{flexGrow: 1}}>
+                <Link to="/" component={RouterLink} color="inherit" variant="h6">
                     Golang_Imageboard
                 </Link>
+                <span id="spacer" style={{flexGrow: 1}}/>
                 <AuthButton />
             </Toolbar>
         </AppBar>
