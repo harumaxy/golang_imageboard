@@ -129,7 +129,7 @@ type CommentFormProps = {
 
 const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
     const user_info = isLoggedIn ? (JSON.parse(localStorage.getItem("user_info") as string)) : null
-    const [author, setAuthor] = useState(user_info.name || "no name")
+    const [author, setAuthor] = useState(user_info ? user_info.name : "no name")
     const [body, setBody] = useState("")
 
 
@@ -173,12 +173,16 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item >
-                        <Avatar
-                            alt={user_info.name}
-                            srcSet={user_info.picture}
-                        />
+                        {isLoggedIn()?(
+                            <Avatar
+                                alt={user_info.name}
+                                srcSet={user_info.picture}
+                            />
+                        ):(
+                            <AccountCircle />
+                        )}
                     </Grid>
-                    <Grid item style={{flexGrow: 1, margin: 10}}>
+                    <Grid item style={{ flexGrow: 1, margin: 10 }}>
                         <TextField
                             label="comment"
                             name="body"
