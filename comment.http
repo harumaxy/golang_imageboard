@@ -1,0 +1,14 @@
+POST http://localhost:8080/posts/1/comments HTTP/1.1
+Content-type: application/json
+
+{
+  "post_id": 1,
+  "author": "max",
+  "body": "hello"
+}
+
+# 	PostID uint   `json:"post_id"`
+# 	Author string `json:"author"`
+# 	Body   string `json:"body"`
+# }
+
