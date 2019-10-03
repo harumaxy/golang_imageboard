@@ -3,7 +3,7 @@ import Auth0Lock from "auth0-lock"
 import { Button } from "@material-ui/core";
 import { IconButton, Avatar } from "@material-ui/core";
 
-
+import {isLoggedIn} from '../utils/isLoggedIn'
 
 
 const Lock = () => {
@@ -51,12 +51,6 @@ const Lock = () => {
             )}
         </>
     )
-}
-
-
-export function isLoggedIn() {
-    const expiredAt = localStorage.getItem("expired_at")
-    return new Date().getTime() < parseInt(expiredAt || "0")
 }
 
 export default Lock
