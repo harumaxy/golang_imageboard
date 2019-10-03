@@ -3,7 +3,7 @@ package models
 import (
 	"github.com/jinzhu/gorm"
 )
-
+// Post 投稿情報
 type Post struct {
 	gorm.Model
 	Title       string    `json:"title"`
