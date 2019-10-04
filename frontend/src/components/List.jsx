@@ -58,7 +58,7 @@ const LayoutGrid = ({posts, offset, perPage}) => {
                                     </Typography>
                                 </Link>
                                 <Typography variant="body2" color="textSecondary" component="p">
-                                    {post.description || "nothing"}
+                                    Posted by {post.author}
                                 </Typography>
                             </CardContent>
                         </Card>

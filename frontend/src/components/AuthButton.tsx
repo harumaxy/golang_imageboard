@@ -3,7 +3,8 @@ import Auth0Lock from "auth0-lock"
 import { Button } from "@material-ui/core";
 import { IconButton, Avatar } from "@material-ui/core";
 
-
+import {isLoggedIn} from '../utils/isLoggedIn'
+import {AUTH0_DOMAIN, AUTH0_CLIENT_ID} from '../setting'
 
 
 const Lock = () => {
@@ -11,8 +12,8 @@ const Lock = () => {
     const user_info = isLoggedIn?(JSON.parse(localStorage.getItem("user_info") as string)) : null
     
     const lock = new Auth0Lock(
-        "3B4y2bgrI3Jiz5QxVGGXMOxHspYHNQvp",
-        "max-project.auth0.com",
+        AUTH0_CLIENT_ID,
+        AUTH0_DOMAIN,
         {
             closable: true,
             auth: {
@@ -51,12 +52,6 @@ const Lock = () => {
             )}
         </>
     )
-}
-
-
-export function isLoggedIn() {
-    const expiredAt = localStorage.getItem("expired_at")
-    return new Date().getTime() < parseInt(expiredAt || "0")
 }
 
 export default Lock

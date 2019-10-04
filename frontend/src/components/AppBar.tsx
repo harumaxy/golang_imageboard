@@ -1,15 +1,17 @@
 import React from "react"
-import { AppBar, Toolbar, Typography } from "@material-ui/core"
+import { AppBar, Toolbar, Typography, Link } from "@material-ui/core"
+import { Link as RouterLink } from 'react-router-dom'
 import AuthButton from "./AuthButton";
 
-const Appbar = ()=>{
+const Appbar = () => {
     return (
         <AppBar position="sticky">
             <Toolbar>
-                <Typography variant="h6" style={{flexGrow: 1}}>
+                <Link to="/" component={RouterLink} color="inherit" variant="h6">
                     Golang_Imageboard
-                </Typography>
-                <AuthButton/>
+                </Link>
+                <span id="spacer" style={{flexGrow: 1}}/>
+                <AuthButton />
             </Toolbar>
         </AppBar>
     )

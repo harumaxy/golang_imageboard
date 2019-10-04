@@ -14,8 +14,8 @@ import AppBar from "./components/AppBar";
 
 ReactDOM.render(
     <PostContainer.Provider>
-        <AppBar/>
         <Router>
+            <AppBar/>
             <Switch>
                 <Route exact path="/posts/create" component={Create}/>
                 <Route exact path="/posts/:id" component={Read}/>
