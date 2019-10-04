@@ -172,8 +172,8 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <Grid container spacing={2} alignItems="center">
-                    <Grid item >
+                <Grid container spacing={2} alignItems="center" justify="center">
+                    <Grid item xs={2}>
                         {isLoggedIn()?(
                             <Avatar
                                 alt={user_info.name}
@@ -183,7 +183,7 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
                             <AccountCircle />
                         )}
                     </Grid>
-                    <Grid item style={{ flexGrow: 1, margin: 10 }}>
+                    <Grid item style={{ marginTop: 10, marginBottom: 10}} xs={8} >
                         <TextField
                             label="comment"
                             name="body"
@@ -195,7 +195,7 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
                             variant="outlined"
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={2}>
                         <Button type="submit" variant="contained" color="primary">
                             Submit
                         </Button>
