@@ -1,4 +1,4 @@
-import React, { useState, FormEventHandler, FormEvent, ChangeEventHandler, ChangeEvent } from "react"
+import React, { useState, FormEventHandler, FormEvent, ChangeEventHandler, ChangeEvent, useEffect } from "react"
 import axios from "axios"
 import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl } from "@material-ui/core"
 import { API_ROOT } from "../setting"
@@ -20,6 +20,13 @@ const Form: React.FC<FormProps> = ({ history }) => {
     const [imageFile, setImageFile] = useState(new File([], ""))
     const [submitted, setSubmitted] = useState(false)
     const fileInput = React.createRef<HTMLInputElement>()
+
+    useEffect(() => {
+        if(isLoggedIn()){
+            const user_info = JSON.parse(localStorage.getItem("user_info") || "{'nickname': 'no name'}")
+            setAuthor(user_info.nickname)
+        }
+    }, [])
 
 
     const handleSubmit: FormEventHandler = async (event: FormEvent) => {
@@ -87,12 +94,8 @@ const Form: React.FC<FormProps> = ({ history }) => {
                         rows="4" fullWidth variant="outlined" />
                     <br />
                     <br />
-                    {/* <TextField label="image_src" name="image_src" onChange={this.handleChange} value={this.state.formData.image_src} variant="outlined" fullWidth/> */}
-                    <br />
-                    <br />
                     <input type="file" name="image" accept="image/*"
                     onChange={handleChangeFile} ref={fileInput} />
-                    <br/>
                     
                     <br/>
                     <img src={imagePreviewSrc} style={{width: "80%"}}/>
