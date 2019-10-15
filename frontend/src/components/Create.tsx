@@ -92,10 +92,14 @@ const Form: React.FC<FormProps> = ({ history }) => {
                     <br />
                     <input type="file" name="image" accept="image/*"
                     onChange={handleChangeFile} ref={fileInput} />
+                    <br/>
+                    
+                    <br/>
                     <img src={imagePreviewSrc} style={{width: "80%"}}/>
+                    <br/>
                     <Button type="submit" variant="contained" color="primary" disabled={submitted}>
                         Submit
-            </Button>
+                    </Button>
                 </form>
             </Grid>
         </Paper>
