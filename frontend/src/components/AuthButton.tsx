@@ -25,10 +25,10 @@ const Lock = () => {
         },
     )
     lock.on("authenticated", (authResult) => {
-        const expiredAt = JSON.stringify(authResult.expiresIn * 1000) + new Date().getTime()
+        const expiredAt = authResult.expiresIn * 1000 + new Date().getTime()
         localStorage.setItem("access_token", authResult.accessToken)
         localStorage.setItem("id_token", authResult.idToken)
-        localStorage.setItem("expired_at", expiredAt)
+        localStorage.setItem("expired_at", expiredAt.toString())
         localStorage.setItem("user_info", JSON.stringify(authResult.idTokenPayload))
         console.log(authResult);
         // 認証情報をlocalStorageに保存したあとに再レンダリングする。
