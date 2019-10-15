@@ -3,3 +3,5 @@ test.http
 golang_imageboard
 
 images/
+
+*.json
