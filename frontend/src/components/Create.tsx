@@ -1,12 +1,14 @@
 import React, { useState, FormEventHandler, FormEvent, ChangeEventHandler, ChangeEvent, useEffect } from "react"
 import axios from "axios"
-import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl } from "@material-ui/core"
+import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl, CircularProgress } from "@material-ui/core"
 import { API_ROOT } from "../setting"
 import { isLoggedIn } from "../utils/isLoggedIn"
 import { History } from "history"
 import src from "*.jpeg"
 import { For } from "@babel/types"
 
+
+import { Modal, Backdrop } from '@material-ui/core'
 
 type FormProps = {
     history: History
@@ -22,7 +24,7 @@ const Form: React.FC<FormProps> = ({ history }) => {
     const fileInput = React.createRef<HTMLInputElement>()
 
     useEffect(() => {
-        if(isLoggedIn()){
+        if (isLoggedIn()) {
             const user_info = JSON.parse(localStorage.getItem("user_info") || "{'nickname': 'no name'}")
             setAuthor(user_info.nickname)
         }
@@ -45,7 +47,7 @@ const Form: React.FC<FormProps> = ({ history }) => {
                     'content-type': 'multipart/form-data',
                     "Authorization": `Bearer ${localStorage.getItem("id_token")}`,
                 },
-        })
+            })
         // Postが終わったらListに戻る
         history.push(`${API_ROOT}/posts`)
     }
@@ -70,7 +72,7 @@ const Form: React.FC<FormProps> = ({ history }) => {
         const files = (fileInput.current as HTMLInputElement).files as FileList
         let file = files[0]
         let reader = new FileReader()
-        reader.onload = ()=>{
+        reader.onload = () => {
             setImageFile(file)
             setImagePreviewSrc(reader.result as string)
         }
@@ -95,16 +97,37 @@ const Form: React.FC<FormProps> = ({ history }) => {
                     <br />
                     <br />
                     <input type="file" name="image" accept="image/*"
-                    onChange={handleChangeFile} ref={fileInput} />
-                    
-                    <br/>
-                    <img src={imagePreviewSrc} style={{width: "80%"}}/>
-                    <br/>
+                        onChange={handleChangeFile} ref={fileInput} />
+
+                    <br />
+                    <img src={imagePreviewSrc} style={{ width: "80%" }} />
+                    <br />
                     <Button type="submit" variant="contained" color="primary" disabled={submitted}>
                         Submit
                     </Button>
                 </form>
             </Grid>
+            {/* ローディング用のモーダル */}
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={submitted}
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    outline: 0,
+                  }}
+                disableAutoFocus={true}
+                disableEnforceFocus={true}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <CircularProgress size={100} variant="indeterminate" />
+            </Modal>
         </Paper>
     )
 
