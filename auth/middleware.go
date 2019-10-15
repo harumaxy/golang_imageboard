@@ -4,21 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
-	"gopkg.in/yaml.v2"
+	"golang_imageboard/setting"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
-
-type Auth0Setting struct {
-	AUTH0_CLIENT_ID string `yaml:"AUTH0_CLIENT_ID"`
-	AUTH0_DOMAIN    string `yaml:"AUTH0_DOMAIN"`
-}
 
 type Jwks struct {
 	Keys []JSONWebKeys `json:"keys"`
@@ -36,13 +30,12 @@ type JSONWebKeys struct {
 
 var (
 	globalJwtMiddleWare *jwtmiddleware.JWTMiddleware
-	settings            Auth0Setting
 )
 
 // 公開鍵を取得する
 func getPemCert(token *jwt.Token) (string, error) {
 	cert := ""
-	resp, err := http.Get(settings.AUTH0_DOMAIN + ".well-known/jwks.json")
+	resp, err := http.Get(setting.AUTH0_DOMAIN + ".well-known/jwks.json")
 	if err != nil {
 		return cert, err
 	}
@@ -86,19 +79,18 @@ func NewAuthMiddleware() gin.HandlerFunc {
 }
 
 func initMiddleware() {
-	initSetting()
 	// jwt認証ミドルウェアを作成
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 
 			// aud を検証
-			aud := settings.AUTH0_CLIENT_ID
+			aud := setting.AUTH0_CLIENT_ID
 			checkAudience := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
 			if !checkAudience {
 				return token, errors.New("Invalid audience.")
 			}
 			// iss を検証
-			iss := settings.AUTH0_DOMAIN
+			iss := setting.AUTH0_DOMAIN
 			checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
 			if !checkIss {
 				return token, errors.New("Invalid issuer.")
@@ -119,14 +111,4 @@ func initMiddleware() {
 	globalJwtMiddleWare = jwtMiddleware
 
 	// ... the rest of the code below this function doesn't change yet
-}
-
-// YAMLファイルに書かれたドメイン情報を読み込む
-func initSetting() {
-	// Auth0のドメインやクライアントIDをグローバル変数のsettingに読み込む
-	buf, err := ioutil.ReadFile("./setting.yml") // main.goからの相対パス
-	if err != nil {
-		panic(err)
-	}
-	err = yaml.Unmarshal(buf, &settings)
 }

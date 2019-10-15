@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"golang_imageboard/db"
 	"golang_imageboard/models"
+	"golang_imageboard/setting"
 	"io"
 	"log"
 	"os"
@@ -138,7 +139,7 @@ func handleError(c *gin.Context, err error) {
 // saveImageToBucketObject : CloudStrageにファイルを保存して、image_srcを返す
 func saveImageToBucketObject(image io.Reader, fileName string) string {
 	const bucketname = "images8821"
-	if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./golang-imageboard-e2c34c26c97c.json"); err != nil {
+	if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./"+setting.GCP_CREDENTIAL); err != nil {
 		log.Fatal(err)
 	}
 
