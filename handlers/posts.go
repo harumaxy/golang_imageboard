@@ -158,10 +158,10 @@ func saveImageToBucketObject(image io.Reader, fileName string) string {
 	writer := obj.NewWriter(ctx)
 	// コピー
 	if _, err := io.Copy(writer, image); err != nil {
-		log.Fatal("Cloud Strageへの保存が失敗")
+		log.Println("Cloud Strageへの保存が失敗")
 	}
 	if err := writer.Close(); err != nil {
-		log.Fatal("バケットオブジェクトのWriteを閉じるのに失敗")
+		log.Println("バケットオブジェクトのWriteを閉じるのに失敗")
 	}
 
 	return path.Join("https://storage.cloud.google.com/", bucketname, objName)
