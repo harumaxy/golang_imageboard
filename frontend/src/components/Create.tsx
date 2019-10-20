@@ -1,12 +1,14 @@
-import React, { useState, FormEventHandler, FormEvent, ChangeEventHandler, ChangeEvent } from "react"
-import axios from "axios"
-import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl } from "@material-ui/core"
+import React, { useState, FormEventHandler, FormEvent, ChangeEventHandler, ChangeEvent, useEffect } from "react"
+import axios, { AxiosError, AxiosResponse } from "axios"
+import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl, CircularProgress, Typography } from "@material-ui/core"
 import { API_ROOT } from "../setting"
 import { isLoggedIn } from "../utils/isLoggedIn"
 import { History } from "history"
 import src from "*.jpeg"
 import { For } from "@babel/types"
 
+
+import { Modal, Backdrop } from '@material-ui/core'
 
 type FormProps = {
     history: History
@@ -21,6 +23,16 @@ const Form: React.FC<FormProps> = ({ history }) => {
     const [submitted, setSubmitted] = useState(false)
     const fileInput = React.createRef<HTMLInputElement>()
 
+    const [isError, setIsError] = useState(false)
+    const [errorMsg, setErrorMsg] = useState("")
+
+    useEffect(() => {
+        if (isLoggedIn()) {
+            const user_info = JSON.parse(localStorage.getItem("user_info") || "{'nickname': 'no name'}")
+            setAuthor(user_info.nickname)
+        }
+    }, [])
+
 
     const handleSubmit: FormEventHandler = async (event: FormEvent) => {
         event.preventDefault()
@@ -32,15 +44,35 @@ const Form: React.FC<FormProps> = ({ history }) => {
         submitData.append("image", imageFile)
 
         // Postリクエスト
-        await axios.post(`${API_ROOT}/posts`, submitData,
+        axios.post(`${API_ROOT}/posts`, submitData,
             {
                 headers: {
                     'content-type': 'multipart/form-data',
                     "Authorization": `Bearer ${localStorage.getItem("id_token")}`,
                 },
-        })
-        // Postが終わったらListに戻る
-        history.push(`${API_ROOT}/posts`)
+                validateStatus : (status) =>{
+                    return status == 201 || status == 401
+                }
+            }).then((res: AxiosResponse) => {
+                switch (res.status) {
+                    case 201:
+                        // Postが終わったらListに戻る
+                        console.log("successed!");
+                        history.push(`${API_ROOT}/posts`)
+                        break;
+                    case 401:
+                        setIsError(true)
+                        setErrorMsg("認証が切れているか、ログインしていません。右上のボタンでログインし直してください。")
+                        setSubmitted(false)
+                    default:
+                        console.log("想定していないステータスコード");
+                        break
+                }
+            }).catch((err: AxiosError) => {
+                setIsError(true)
+                setErrorMsg(err.message)
+                setSubmitted(false)
+            })
     }
 
     // 発生したイベントに応じて、値を変更する
@@ -62,8 +94,13 @@ const Form: React.FC<FormProps> = ({ history }) => {
     const handleChangeFile = (e: ChangeEvent) => {
         const files = (fileInput.current as HTMLInputElement).files as FileList
         let file = files[0]
+        console.log(file);
+        
+        if (file===undefined){
+            return
+        }
         let reader = new FileReader()
-        reader.onload = ()=>{
+        reader.onload = () => {
             setImageFile(file)
             setImagePreviewSrc(reader.result as string)
         }
@@ -87,17 +124,42 @@ const Form: React.FC<FormProps> = ({ history }) => {
                         rows="4" fullWidth variant="outlined" />
                     <br />
                     <br />
-                    {/* <TextField label="image_src" name="image_src" onChange={this.handleChange} value={this.state.formData.image_src} variant="outlined" fullWidth/> */}
-                    <br />
-                    <br />
                     <input type="file" name="image" accept="image/*"
-                    onChange={handleChangeFile} ref={fileInput} />
-                    <img src={imagePreviewSrc} style={{width: "80%"}}/>
+                        onChange={handleChangeFile} ref={fileInput} required />
+
+                    <br />
+                    <img src={imagePreviewSrc} style={{ width: "80%" }} />
+                    <br />
                     <Button type="submit" variant="contained" color="primary" disabled={submitted}>
                         Submit
-            </Button>
+                    </Button>
+                    {isError ? (
+                        <Typography variant="h6" color="error">{errorMsg}</Typography>
+                    ) : (null)}
                 </form>
+
             </Grid>
+            {/* ローディング用のモーダル */}
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={submitted}
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    outline: 0,
+                }}
+                disableAutoFocus={true}
+                disableEnforceFocus={true}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <CircularProgress size={100} variant="indeterminate" style={{ outline: 0 }} />
+            </Modal>
         </Paper>
     )
 
