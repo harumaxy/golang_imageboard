@@ -9,6 +9,7 @@ import Axios, { AxiosResponse, AxiosRequestConfig } from "axios";
 import { API_ROOT } from '../setting'
 
 import { isLoggedIn } from '../utils/isLoggedIn'
+import SncakbarContainer from "../containers/SncakbarContainer";
 
 
 type Post = {
@@ -133,8 +134,10 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
     const [author, setAuthor] = useState(user_info ? user_info.name : "no name")
     const [body, setBody] = useState("")
 
-
     const { post_id, update } = props
+
+    const {setSnackbarMsg, setIsSnackBarOpen} = SncakbarContainer.useContainer()
+
 
     const handleSubmit: FormEventHandler = (e: FormEvent) => {
         e.preventDefault()
@@ -151,7 +154,11 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
                 }
             }
         ).then(
-            () => { update(); alert("submitted") }
+            () => { 
+                update(); 
+                setIsSnackBarOpen(true)
+                setSnackbarMsg("コメント投稿しました")
+            }
         )
     }
 
@@ -193,6 +200,7 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
                             rows="2"
                             fullWidth
                             variant="outlined"
+                            required
                         />
                     </Grid>
                     <Grid item xs={2}>
