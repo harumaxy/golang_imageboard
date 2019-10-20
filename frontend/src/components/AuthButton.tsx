@@ -10,13 +10,14 @@ import { MenuItem, Menu } from '@material-ui/core';
 import { Snackbar, Slide } from '@material-ui/core'
 
 import useReactRouter from "use-react-router"
+import SncakbarContainer from "../containers/SncakbarContainer";
 
 const Lock = () => {
     const [loading, setLoading] = useState(false)
     const [authed, setAuthed] = useState(false)
 
-    const [isSnackOpen, setIsSnackOpen] = useState(false)
-    const [snackbarMsg, setSnackbarMsg] = useState("")
+    const {isSnackBarOpen, snackbarMsg, setIsSnackBarOpen} = SncakbarContainer.useContainer()
+
 
     useEffect(() => {
         setAuthed(isLoggedIn())
@@ -56,16 +57,16 @@ const Lock = () => {
     return (
         <>
             {authed ? (
-                <AvatarButton nickname={user_info.nickname} picture_src={user_info.picture} setAuthed={setAuthed} setIsSnackOpen={setIsSnackOpen} setSnackbarMsg={setSnackbarMsg} />
+                <AvatarButton nickname={user_info.nickname} picture_src={user_info.picture} setAuthed={setAuthed} />
 
             ) : (
-                    <Button onClick={() => { lock.show() }} color="inherit" >Login</Button>
+                <Button onClick={() => { lock.show() }} color="inherit" >Login</Button>
             )}
             {/* スナックバー */}
             <Snackbar
-                open={isSnackOpen}
+                open={isSnackBarOpen}
                 anchorOrigin={{vertical: "top", horizontal: "center"}}
-                onClose={() => setIsSnackOpen(false)}
+                onClose={() => setIsSnackBarOpen(false)}
                 TransitionComponent={SlideTransitins}
                 ContentProps={{
                     'aria-describedby': 'message-id',
@@ -83,14 +84,14 @@ type AvatarProps = {
     nickname: string,
     picture_src: string,
     setAuthed: (authed: boolean) => void,
-    setIsSnackOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    setSnackbarMsg: React.Dispatch<React.SetStateAction<string>>,
 }
 
-const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src, setAuthed, setIsSnackOpen, setSnackbarMsg }) => {
+const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src, setAuthed}) => {
     const [anchorEl, setAnchorEl] = React.useState(null as any);
     const { history } = useReactRouter()
     
+    const {setIsSnackBarOpen, setSnackbarMsg} = SncakbarContainer.useContainer()
+
 
     const handleClick = (event: any) => {
         setAnchorEl(event.currentTarget);
@@ -103,7 +104,7 @@ const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src, setAuthed,
     const handleMyAccount = () => {
         setAnchorEl(null)
         setSnackbarMsg("この機能はまだ実装してません")
-        setIsSnackOpen(true)
+        setIsSnackBarOpen(true)
     };
 
 
@@ -112,7 +113,7 @@ const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src, setAuthed,
         setAnchorEl(null)
         setAuthed(false)
         setSnackbarMsg("Logout しました")
-        setIsSnackOpen(true)
+        setIsSnackBarOpen(true)
     };
 
 
