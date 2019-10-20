@@ -1,6 +1,6 @@
 import React, { useState, FormEventHandler, FormEvent, ChangeEventHandler, ChangeEvent, useEffect } from "react"
-import axios from "axios"
-import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl, CircularProgress } from "@material-ui/core"
+import axios, { AxiosError, AxiosResponse } from "axios"
+import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl, CircularProgress, Typography } from "@material-ui/core"
 import { API_ROOT } from "../setting"
 import { isLoggedIn } from "../utils/isLoggedIn"
 import { History } from "history"
@@ -23,6 +23,9 @@ const Form: React.FC<FormProps> = ({ history }) => {
     const [submitted, setSubmitted] = useState(false)
     const fileInput = React.createRef<HTMLInputElement>()
 
+    const [isError, setIsError] = useState(false)
+    const [errorMsg, setErrorMsg] = useState("")
+
     useEffect(() => {
         if (isLoggedIn()) {
             const user_info = JSON.parse(localStorage.getItem("user_info") || "{'nickname': 'no name'}")
@@ -41,15 +44,35 @@ const Form: React.FC<FormProps> = ({ history }) => {
         submitData.append("image", imageFile)
 
         // Postリクエスト
-        await axios.post(`${API_ROOT}/posts`, submitData,
+        axios.post(`${API_ROOT}/posts`, submitData,
             {
                 headers: {
                     'content-type': 'multipart/form-data',
                     "Authorization": `Bearer ${localStorage.getItem("id_token")}`,
                 },
+                validateStatus : (status) =>{
+                    return status == 201 || status == 401
+                }
+            }).then((res: AxiosResponse) => {
+                switch (res.status) {
+                    case 201:
+                        // Postが終わったらListに戻る
+                        console.log("successed!");
+                        history.push(`${API_ROOT}/posts`)
+                        break;
+                    case 401:
+                        setIsError(true)
+                        setErrorMsg("認証が切れているか、ログインしていません。右上のボタンでログインし直してください。")
+                        setSubmitted(false)
+                    default:
+                        console.log("想定していないステータスコード");
+                        break
+                }
+            }).catch((err: AxiosError) => {
+                setIsError(true)
+                setErrorMsg(err.message)
+                setSubmitted(false)
             })
-        // Postが終わったらListに戻る
-        history.push(`${API_ROOT}/posts`)
     }
 
     // 発生したイベントに応じて、値を変更する
@@ -71,6 +94,11 @@ const Form: React.FC<FormProps> = ({ history }) => {
     const handleChangeFile = (e: ChangeEvent) => {
         const files = (fileInput.current as HTMLInputElement).files as FileList
         let file = files[0]
+        console.log(file);
+        
+        if (file===undefined){
+            return
+        }
         let reader = new FileReader()
         reader.onload = () => {
             setImageFile(file)
@@ -97,7 +125,7 @@ const Form: React.FC<FormProps> = ({ history }) => {
                     <br />
                     <br />
                     <input type="file" name="image" accept="image/*"
-                        onChange={handleChangeFile} ref={fileInput} />
+                        onChange={handleChangeFile} ref={fileInput} required />
 
                     <br />
                     <img src={imagePreviewSrc} style={{ width: "80%" }} />
@@ -105,7 +133,11 @@ const Form: React.FC<FormProps> = ({ history }) => {
                     <Button type="submit" variant="contained" color="primary" disabled={submitted}>
                         Submit
                     </Button>
+                    {isError ? (
+                        <Typography variant="h6" color="error">{errorMsg}</Typography>
+                    ) : (null)}
                 </form>
+
             </Grid>
             {/* ローディング用のモーダル */}
             <Modal
@@ -117,7 +149,7 @@ const Form: React.FC<FormProps> = ({ history }) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     outline: 0,
-                  }}
+                }}
                 disableAutoFocus={true}
                 disableEnforceFocus={true}
                 closeAfterTransition
@@ -126,7 +158,7 @@ const Form: React.FC<FormProps> = ({ history }) => {
                     timeout: 500,
                 }}
             >
-                <CircularProgress size={100} variant="indeterminate" />
+                <CircularProgress size={100} variant="indeterminate" style={{ outline: 0 }} />
             </Modal>
         </Paper>
     )
