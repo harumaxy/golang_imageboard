@@ -10,10 +10,14 @@ import Create from "./components/Create"
 import Read from "./components/Read"
 import Lock from './components/AuthButton';
 import AppBar from "./components/AppBar";
+import SncakbarContainer from './containers/SncakbarContainer';
+
+
 
 
 ReactDOM.render(
     <PostContainer.Provider>
+    <SncakbarContainer.Provider>
         <Router>
             <AppBar/>
             <Switch>
@@ -24,6 +28,7 @@ ReactDOM.render(
             <p><Link to="">List</Link></p>
             <p><Link to="/posts/create">Create</Link></p>
         </Router>
+    </SncakbarContainer.Provider>
     </PostContainer.Provider>
 
 , document.getElementById('root'));
