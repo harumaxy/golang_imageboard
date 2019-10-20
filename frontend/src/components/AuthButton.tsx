@@ -15,6 +15,9 @@ const Lock = () => {
     const [loading, setLoading] = useState(false)
     const [authed, setAuthed] = useState(false)
 
+    const [isSnackOpen, setIsSnackOpen] = useState(false)
+    const [snackbarMsg, setSnackbarMsg] = useState("")
+
     useEffect(() => {
         setAuthed(isLoggedIn())
     })
@@ -53,11 +56,24 @@ const Lock = () => {
     return (
         <>
             {authed ? (
-                <AvatarButton nickname={user_info.nickname} picture_src={user_info.picture} setAuthed={setAuthed} />
+                <AvatarButton nickname={user_info.nickname} picture_src={user_info.picture} setAuthed={setAuthed} setIsSnackOpen={setIsSnackOpen} setSnackbarMsg={setSnackbarMsg} />
 
             ) : (
                     <Button onClick={() => { lock.show() }} color="inherit" >Login</Button>
-                )}
+            )}
+            {/* スナックバー */}
+            <Snackbar
+                open={isSnackOpen}
+                anchorOrigin={{vertical: "top", horizontal: "center"}}
+                onClose={() => setIsSnackOpen(false)}
+                TransitionComponent={SlideTransitins}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+
+                }}
+                
+                message={<span id="message-id">{snackbarMsg}</span>}
+            />
         </>
     )
 }
@@ -66,15 +82,15 @@ const Lock = () => {
 type AvatarProps = {
     nickname: string,
     picture_src: string,
-    setAuthed: (authed: boolean) => void
+    setAuthed: (authed: boolean) => void,
+    setIsSnackOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    setSnackbarMsg: React.Dispatch<React.SetStateAction<string>>,
 }
 
-const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src, setAuthed }) => {
-    const [open, setOpen] = useState(false)
+const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src, setAuthed, setIsSnackOpen, setSnackbarMsg }) => {
     const [anchorEl, setAnchorEl] = React.useState(null as any);
     const { history } = useReactRouter()
-    const [isSnackOpen, setIsSnackOpen] = useState(false)
-
+    
 
     const handleClick = (event: any) => {
         setAnchorEl(event.currentTarget);
@@ -86,6 +102,7 @@ const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src, setAuthed 
 
     const handleMyAccount = () => {
         setAnchorEl(null)
+        setSnackbarMsg("この機能はまだ実装してません")
         setIsSnackOpen(true)
     };
 
@@ -94,7 +111,8 @@ const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src, setAuthed 
         localStorage.clear()
         setAnchorEl(null)
         setAuthed(false)
-        alert("logged out")
+        setSnackbarMsg("Logout しました")
+        setIsSnackOpen(true)
     };
 
 
@@ -130,19 +148,7 @@ const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src, setAuthed 
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
 
-            {/* スナックバー */}
-            <Snackbar
-                open={isSnackOpen}
-                anchorOrigin={{vertical: "top", horizontal: "center"}}
-                onClose={() => setIsSnackOpen(false)}
-                TransitionComponent={SlideTransitins}
-                ContentProps={{
-                    'aria-describedby': 'message-id',
-
-                }}
-                
-                message={<span id="message-id">this function is not implemented.</span>}
-            />
+            
 
         </>
     )
