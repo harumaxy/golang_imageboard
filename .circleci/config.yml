@@ -7,8 +7,8 @@ jobs:
       POSTGRES_DATABASE: gorm
     docker:
       - image: circleci/golang:1.13
-      - image: circleci/postgres
     steps:
+      - checkout
       - run: go build
 
     
