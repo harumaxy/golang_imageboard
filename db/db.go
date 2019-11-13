@@ -1,12 +1,14 @@
 package db
 
 import (
+	"fmt"
 	"log"
 
 	"golang_imageboard/models"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/kelseyhightower/envconfig"
 )
 
 var (
@@ -14,13 +16,25 @@ var (
 	err error
 )
 
+type PostgresEnv struct {
+	Postgres_user     string `default:"gorm"`
+	Postgres_password string `default:"gorm"`
+	Postgres_dbname   string `default:"gorm"`
+	Postgres_host     string `default:"localhost"`
+}
+
 func Init() {
-	db, err = gorm.Open("postgres", `
-	user=gorm 
-	password=gorm 
-	dbname=gorm
-	sslmode=disable
-	`)
+	var pgenv PostgresEnv
+	envconfig.Process("", &pgenv)
+
+	db, err = gorm.Open("postgres",
+		fmt.Sprintf(`
+			user=%s 
+			password=%s 
+			dbname=%s
+			host=%s
+			sslmode=disable
+	`, pgenv.Postgres_user, pgenv.Postgres_password, pgenv.Postgres_dbname, pgenv.Postgres_host))
 	if err != nil {
 		log.Fatalln(err)
 	}
