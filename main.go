@@ -14,7 +14,7 @@ import (
 
 func main() {
 
-	env_load()
+	// env_load()
 
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
