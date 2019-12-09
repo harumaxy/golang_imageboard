@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"golang_imageboard/db"
 	"golang_imageboard/models"
-	"golang_imageboard/setting"
 	"io"
 	"log"
 	"os"
@@ -14,10 +13,16 @@ import (
 
 	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
+	"github.com/kelseyhightower/envconfig"
 )
 
-const imagePath = "./images"
-const staticRoot = "http://localhost:8080/images/"
+type GCP_ENV struct {
+	GCP_CREDENTIAL_FILE_NAME string `default:""`
+}
+
+var (
+	gcpenv GCP_ENV
+)
 
 // Post 使いやすいようstructをrename
 type Post = models.Post
@@ -138,8 +143,13 @@ func handleError(c *gin.Context, err error) {
 
 // saveImageToBucketObject : CloudStrageにファイルを保存して、image_srcを返す
 func saveImageToBucketObject(image io.Reader, fileName string) string {
+
+	if gcpenv.GCP_CREDENTIAL_FILE_NAME == "" {
+		envconfig.Process("", &gcpenv)
+	}
+
 	const bucketname = "images8821"
-	if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./"+setting.GCP_CREDENTIAL); err != nil {
+	if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./"+gcpenv.GCP_CREDENTIAL_FILE_NAME); err != nil {
 		log.Fatal(err)
 	}
 

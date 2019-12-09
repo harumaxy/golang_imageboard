@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	db  *gorm.DB
-	err error
+	db    *gorm.DB
+	err   error
+	pgenv PostgresEnv
 )
 
 type PostgresEnv struct {
@@ -24,7 +25,6 @@ type PostgresEnv struct {
 }
 
 func Init() {
-	var pgenv PostgresEnv
 	envconfig.Process("", &pgenv)
 
 	db, err = gorm.Open("postgres",
