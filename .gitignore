@@ -5,3 +5,4 @@ golang_imageboard
 images/
 
 *.json
+/.envrc
