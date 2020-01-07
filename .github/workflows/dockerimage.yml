@@ -10,7 +10,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    
+    - name: output secret credential.json
+      run: echo ${{ secrets.GCP_CREDENTIALS }} | base64 -d >> credential.json
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
