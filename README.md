@@ -14,4 +14,8 @@ Golang API Server + React で作成した画像掲示板
 - ステートレスで並行性が高い
 - 環境変数を利用した設定の注入による、再利用性と秘匿性を確保
 
-![](https://github.com/harumaxy/golang_imageboard/workflows/Docker_Image_CI/badge.svg)
+
+# CI/CD
+Github Actionsによるビルドとデプロイを利用する予定です。
+
+![](https://github.com/harumaxy/golang_imageboard/workflows/Docker%20Image%20CI/badge.svg)
