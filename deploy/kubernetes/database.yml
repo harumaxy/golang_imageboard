@@ -1,0 +1,62 @@
+# クラスタ内のポッドから、host:port = postgres-service:5432  でアクセスできる
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+
+---
+# StatefulSet
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: default
+spec:
+  serviceName: postgres-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres
+        volumeMounts:
+          - name: pvc
+            mountPath: /var/lib/pgsql
+        envFrom:
+          - secretRef:
+              name: env-secret
+        ports:
+          - containerPort: 5432
+  volumeClaimTemplates:
+    - metadata:
+        name: pvc
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 3G
+        storageClassName: pg-storageclass
+
+--- 
+# StorageClass + PersistentVolumeClame(template) = Dynamic Provisioning
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: pg-storageclass
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
