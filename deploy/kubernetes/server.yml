@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-server-service
+spec:
+  type: ClusterIP
+  selector:
+    app: web-server
+  ports:
+  - name: http-port
+    port: 80
+    targetPort: 8080
+
+
+
+--- 
+
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: web-server
+spec:
+  selector:
+    matchLabels:
+      app: web-server
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: web-server
+    spec:
+      containers:
+        - name: web-server
+          image: harumaxy/golang_imageboard:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: env-secret
