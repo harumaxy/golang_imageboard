@@ -13,4 +13,4 @@ COPY --from=builder /go/src/app/main .
 COPY --from=builder /go/src/app/start.sh .
 COPY --from=builder /go/src/app/credential.json .
 
-CMD ["source", "/app/start.sh"]
+CMD ["/app/start.sh"]
