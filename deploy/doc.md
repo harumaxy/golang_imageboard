@@ -76,3 +76,23 @@ Secretに保存されている値全てを使って、envを構成すること�
                 name: my-secret  # Secret名
 ~~~
 ```
+
+# Secretリソースの暗号化
+
+`kubesec` を使う
+`gcloud` コマンドと同じ認証情報を使うので、Secretや使ったキー、コマンドを丸上げしても
+GCPアカウントで認証しなければ複合できないので安全
+
+```bash
+brew install kubesec
+
+# 暗号化
+kubesec encrypt -i secret.yml \
+  --key=gcp:projects/thematic-bee-252602/locations/global/keyRings/sample-keyring/cryptoKeys/kubesec-key
+  --cleartext
+
+# 復号化
+# KubernetesにSecretリソースを登録するには値がbase64 encodeされていなければならないので、
+# そのまま登録するなら--cleartextはいらない
+kubesec decryspt -i secret.yml --cleartext
+```
