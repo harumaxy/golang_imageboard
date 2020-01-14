@@ -10,7 +10,7 @@ RUN CGO_ENABLED=0 go build main.go
 FROM alpine
 WORKDIR /app
 COPY --from=builder /go/src/app/main .
-# COPY --from=builder /go/src/app/.env .
+COPY --from=builder /go/src/app/start.sh .
 COPY --from=builder /go/src/app/credential.json .
 
-CMD ["/app/main"]
+CMD ["/app/start.sh"]
