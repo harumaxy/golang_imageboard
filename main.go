@@ -48,7 +48,7 @@ func main() {
 	r.Static("/images", "./images")
 	db.Init()
 	defer db.CloseDB()
-	r.Run(":8080")
+	r.Run(":80")
 }
 
 func env_load() {

@@ -6,3 +6,5 @@ images/
 
 *.json
 /.envrc
+
+deploy/terraform/.terraform/*
