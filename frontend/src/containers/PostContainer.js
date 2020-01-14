@@ -8,7 +8,7 @@ const usePostContainer = () => {
   const [posts, setPosts] = useState({});
 
   const fetch_posts = async () => {
-    const res = await axios.get(`http://${API_ROOT}/posts`);
+    const res = await axios.get(`${API_ROOT}/posts`);
     setPosts(_.mapKeys(res.data, "ID"));
   };
 

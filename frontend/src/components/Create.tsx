@@ -65,7 +65,7 @@ const Form: React.FC<FormProps> = ({ history }) => {
 
     // Postリクエスト
     axios
-      .post(`http://${API_ROOT}/posts`, submitData, {
+      .post(`${API_ROOT}/posts`, submitData, {
         headers: {
           "content-type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("id_token")}`
