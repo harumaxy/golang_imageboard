@@ -38,12 +38,12 @@ jobs:
       env:
         CLI: gsutil
       with:
-        args: rsync -d -R frontend/build gs://thematic-bee-252602/frontpage
+        args: rsync -d -R frontend/build gs://imageboard-frontpage8821
         
     - name: set Access Control List
       uses: actions-hub/gcloud@master
       env:
         CLI: gsutil
       with:
-        args: acl ch -r -u AllUsers:R gs://thematic-bee-252602/frontpage
+        args: acl ch -r -u AllUsers:R gs://imageboard-frontpage8821
         
