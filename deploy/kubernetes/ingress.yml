@@ -1,0 +1,11 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traffic-router
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:
+              serviceName: web-server-service
+              servicePort: 80
