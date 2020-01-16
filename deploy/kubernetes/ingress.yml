@@ -3,9 +3,12 @@ kind: Ingress
 metadata:
   name: traffic-router
 spec:
+  tls:
+    - secretName: ssl-secret
   rules:
     - http:
         paths:
           - backend:
               serviceName: web-server-service
               servicePort: 80
+
