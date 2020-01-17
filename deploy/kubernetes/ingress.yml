@@ -6,9 +6,13 @@ spec:
   tls:
     - secretName: ssl-secret
   rules:
-    - http:
+    - host: golang-imageboard-8821.tk
+      http:
         paths:
-          - backend:
+          - path: /
+            backend:
               serviceName: web-server-service
               servicePort: 80
-
+  backend:
+    serviceName: web-server-service
+    servicePort: 80
