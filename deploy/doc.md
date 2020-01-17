@@ -203,3 +203,32 @@ DNSレコードのCNAMEは、サブドメインでしか使えないのでCloud 
   - 公開鍵は秘密鍵から生成できるが、逆はできない
   - サーバーが秘密鍵を持つ、クライアントには公開鍵が配られる
   - 暗号化は誰でもできる、復号化はサーバーしかできない
+
+
+## Ingress のマニフェストを書く
+
+`./kubernetes/ingress.yml`を参照
+Ingressはhttps通信のターミネーターとしての役割も持つ。
+ssl認証されたドメインのAレコードを、`Ingress`で作成したエンドポイントに向けておく。
+
+ポイントは、
+- ~~`spec.rules[].host` に、ssl証明書・キーを取得してあるホストを指定する。~~
+  - hostを設定しないで、Ingressを作成したあとにDNSのAレコードにIngressのIPを入れる
+  - Ingressを作成したら VPC > 外部IP > エフェメラル を静的IPにする(長期間使う場合)
+    - hostを指定してIngressを作成したら、VPC > 外部IPを確認すればIngressのIPがわかる？
+- `spec.tls[].secletName` に、`tls.crt` と `tls.key` を含むSecretのnameを指定する。
+- `Ingress`で公開する`Service`は、`type: NodePort` にしておく(必須!)
+
+## IngressでHTTPを無効化して、HTTPSだけにする
+
+[Ingress を使用した HTTP(S) 負荷分散  |  Kubernetes Engine のドキュメント  |  Google Cloud](https://cloud.google.com/kubernetes-engine/docs/concepts/ingress?hl=ja)
+
+`Ingress` の `metadata.anotations` フィールドに記述する、
+すると、tlsに設定した証明書ファイル・キーと紐づくドメインのhttps通信でしかアクセスできなくなる
+(httpで通信すると404エラーになる)
+
+```yaml
+metadata:
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
+```
