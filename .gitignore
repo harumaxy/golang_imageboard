@@ -9,4 +9,4 @@ images/
 
 deploy/terraform/.terraform/*
 
-.env
+/.env
