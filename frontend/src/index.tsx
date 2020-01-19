@@ -12,7 +12,7 @@ import Read from "./page/Read"
 import Lock from "./components/AuthButton"
 import AppBar from "./components/AppBar"
 import SncakbarContainer from "./containers/SncakbarContainer"
-import { PUBLIC_URL } from "./setting"
+import { PUBLIC_URL, AUTH0_AUDIENCE } from "./setting"
 import { Auth0Provider } from "./containers/react-auth0-spa"
 import { AUTH0_CLIENT_ID, AUTH0_DOMAIN } from "./setting"
 import history from "./utils/history"
@@ -23,7 +23,13 @@ const onRedirectCallback = (appState: any) => {
 }
 
 ReactDOM.render(
-  <Auth0Provider domain={AUTH0_DOMAIN} client_id={AUTH0_CLIENT_ID} redirect_uri={window.location.origin} onRedirectCallback={onRedirectCallback as any}>
+  <Auth0Provider
+    domain={AUTH0_DOMAIN}
+    client_id={AUTH0_CLIENT_ID}
+    redirect_uri={window.location.origin}
+    onRedirectCallback={onRedirectCallback as any}
+    audience={AUTH0_AUDIENCE}
+  >
     <PostContainer.Provider>
       <SncakbarContainer.Provider>
         <Router basename={PUBLIC_URL}>
