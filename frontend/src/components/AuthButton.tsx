@@ -1,80 +1,35 @@
-import React, { useEffect, useState } from "react";
-import Auth0Lock from "auth0-lock";
-import { Button, BottomNavigation } from "@material-ui/core";
-import { IconButton, Avatar } from "@material-ui/core";
+import React, { useEffect, useState } from "react"
+import Auth0Lock from "auth0-lock"
+import { Button, BottomNavigation } from "@material-ui/core"
+import { IconButton, Avatar } from "@material-ui/core"
+import { isLoggedIn } from "../utils/isLoggedIn"
+import { AUTH0_DOMAIN, AUTH0_CLIENT_ID } from "../setting"
+import { MenuItem, Menu } from "@material-ui/core"
+import { Snackbar, Slide } from "@material-ui/core"
+import useReactRouter from "use-react-router"
+import SncakbarContainer from "../containers/SncakbarContainer"
 
-import { isLoggedIn } from "../utils/isLoggedIn";
-import { AUTH0_DOMAIN, AUTH0_CLIENT_ID } from "../setting";
-
-import { MenuItem, Menu } from "@material-ui/core";
-import { Snackbar, Slide } from "@material-ui/core";
-
-import useReactRouter from "use-react-router";
-import SncakbarContainer from "../containers/SncakbarContainer";
+import { useAuth0 } from "../containers/react-auth0-spa"
 
 const Lock = () => {
-  const [loading, setLoading] = useState(false);
-  const [authed, setAuthed] = useState(false);
-
-  const {
-    isSnackBarOpen,
-    snackbarMsg,
-    setIsSnackBarOpen
-  } = SncakbarContainer.useContainer();
-
-  useEffect(() => {
-    setAuthed(isLoggedIn());
-  });
-
-  const user_info = authed
-    ? JSON.parse(localStorage.getItem("user_info") as string)
-    : null;
-
-  const lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN, {
-    closable: true,
-    auth: {
-      responseType: "token id_token",
-      sso: true,
-      redirectUrl: `${window.location.origin}`
-    }
-  });
-  lock.on("authenticated", authResult => {
-    const expiredAt = authResult.expiresIn * 1000 + new Date().getTime();
-    localStorage.setItem("access_token", authResult.accessToken);
-    localStorage.setItem("id_token", authResult.idToken);
-    localStorage.setItem("expired_at", expiredAt.toString());
-    localStorage.setItem(
-      "user_info",
-      JSON.stringify(authResult.idTokenPayload)
-    );
-    console.log(authResult);
-    // 認証情報をlocalStorageに保存したあとに再レンダリングする。
-    setLoading(true);
-  });
-  lock.on("authorization_error", error => {
-    // error code
-    console.log(error);
-  });
+  const { isAuthenticated, user, loading, loginWithPopup } = useAuth0()
+  const { isSnackBarOpen, snackbarMsg, setIsSnackBarOpen } = SncakbarContainer.useContainer()
 
   return (
     <>
-      {authed ? (
-        <AvatarButton
-          nickname={user_info.nickname}
-          picture_src={user_info.picture}
-          setAuthed={setAuthed}
-        />
+      {isAuthenticated && user !== undefined ? (
+        <AvatarButton nickname={user.nickname} picture_src={user.picture} />
       ) : (
         <Button
           onClick={() => {
-            lock.show();
+            loginWithPopup()
           }}
           color="inherit"
         >
           Login
         </Button>
       )}
-      {/* スナックバー */}
+      {/* ログインしたらスナックバーで通知 */}
       <Snackbar
         open={isSnackBarOpen}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -86,57 +41,51 @@ const Lock = () => {
         message={<span id="message-id">{snackbarMsg}</span>}
       />
     </>
-  );
-};
+  )
+}
 
 type AvatarProps = {
-  nickname: string;
-  picture_src: string;
-  setAuthed: (authed: boolean) => void;
-};
+  nickname: string
+  picture_src: string
+}
 
-const AvatarButton: React.FC<AvatarProps> = ({
-  nickname,
-  picture_src,
-  setAuthed
-}) => {
-  const [anchorEl, setAnchorEl] = React.useState(null as any);
-  const { history } = useReactRouter();
+const AvatarButton: React.FC<AvatarProps> = ({ nickname, picture_src }) => {
+  const { logout } = useAuth0()
+  const [anchorEl, setAnchorEl] = React.useState(null as any)
+  const { history } = useReactRouter()
 
-  const {
-    setIsSnackBarOpen,
-    setSnackbarMsg
-  } = SncakbarContainer.useContainer();
+  const { setIsSnackBarOpen, setSnackbarMsg } = SncakbarContainer.useContainer()
+
+  useEffect(() => {
+    setAnchorEl(null)
+    setSnackbarMsg("ログインしました。")
+    setIsSnackBarOpen(true)
+  }, [])
 
   const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   const handleMyAccount = () => {
-    setAnchorEl(null);
-    setSnackbarMsg("この機能はまだ実装してません");
-    setIsSnackBarOpen(true);
-  };
+    setAnchorEl(null)
+    setSnackbarMsg("この機能はまだ実装してません")
+    setIsSnackBarOpen(true)
+  }
 
   const handleLogout = () => {
-    localStorage.clear();
-    setAnchorEl(null);
-    setAuthed(false);
-    setSnackbarMsg("Logout しました");
-    setIsSnackBarOpen(true);
-  };
+    setAnchorEl(null)
+    logout()
+    setSnackbarMsg("ログアウトしました")
+    setIsSnackBarOpen(true)
+  }
 
   return (
     <>
-      <IconButton
-        aria-controls="simple-menu"
-        aria-haspopup="false"
-        onClick={handleClick}
-      >
+      <IconButton aria-controls="simple-menu" aria-haspopup="false" onClick={handleClick}>
         <Avatar alt={nickname} srcSet={picture_src} />
       </IconButton>
 
@@ -163,11 +112,11 @@ const AvatarButton: React.FC<AvatarProps> = ({
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>
-  );
-};
+  )
+}
 
 const SlideTransitins: React.FC<any> = props => {
-  return <Slide {...props} direction="down" />;
-};
+  return <Slide {...props} direction="down" />
+}
 
-export default Lock;
+export default Lock
