@@ -1,19 +1,27 @@
 import React, { useState, FormEventHandler, FormEvent, ChangeEventHandler, ChangeEvent, useEffect } from "react"
 import axios, { AxiosError, AxiosResponse } from "axios"
-import { Button, TextField, Grid, Container, Paper, FormGroup, FormControl, CircularProgress, Typography } from "@material-ui/core"
+import MaterialUI from "@material-ui/core"
 import { API_ROOT } from "../setting"
 import { isLoggedIn } from "../utils/isLoggedIn"
 import { History } from "history"
-import src from "*.jpeg"
-import { For } from "@babel/types"
+import { Backdrop, Paper, Grid, TextField, Button, Typography, Modal, CircularProgress } from "@material-ui/core"
 
-import { Modal, Backdrop } from "@material-ui/core"
+import { useAuth0 } from "../containers/react-auth0-spa"
 
 type FormProps = {
   history: History
 }
 
+type Auth0_Data = {
+  isAuthenticated: boolean
+  user: any
+  getTokenSilently: any
+  getIdTokenClaims: any
+}
+
 const Form: React.FC<FormProps> = ({ history }) => {
+  const { isAuthenticated, user, getTokenSilently, getIdTokenClaims } = useAuth0() as Auth0_Data
+
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("no name")
   const [description, setDescription] = useState("")
@@ -21,16 +29,14 @@ const Form: React.FC<FormProps> = ({ history }) => {
   const [imageFile, setImageFile] = useState(new File([], ""))
   const [submitted, setSubmitted] = useState(false)
   const fileInput = React.createRef<HTMLInputElement>()
-
   const [isError, setIsError] = useState(false)
   const [errorMsg, setErrorMsg] = useState("")
 
   useEffect(() => {
-    if (isLoggedIn()) {
-      const user_info = JSON.parse(localStorage.getItem("user_info") || "{'nickname': 'no name'}")
-      setAuthor(user_info.nickname)
+    if (isAuthenticated && user !== undefined) {
+      setAuthor(user.nickname)
     }
-  }, [])
+  }, [isAuthenticated, user])
 
   const handleSubmit: FormEventHandler = async (event: FormEvent) => {
     event.preventDefault()
@@ -40,16 +46,17 @@ const Form: React.FC<FormProps> = ({ history }) => {
     const submitData = new FormData()
     submitData.append("formData", JSON.stringify({ title, author, description }))
     submitData.append("image", imageFile)
-
+    const token = await getTokenSilently()
+    console.log({ token })
     // Postリクエスト
     axios
       .post(`${API_ROOT}/posts`, submitData, {
         headers: {
           "content-type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("id_token")}`
+          Authorization: `Bearer ${token}`
         },
         validateStatus: status => {
-          return status == 201 || status == 401
+          return status === 201 || status == 401
         }
       })
       .then((res: AxiosResponse) => {
@@ -138,29 +145,36 @@ const Form: React.FC<FormProps> = ({ history }) => {
           ) : null}
         </form>
       </Grid>
-      {/* ローディング用のモーダル */}
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={submitted}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          outline: 0
-        }}
-        disableAutoFocus={true}
-        disableEnforceFocus={true}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500
-        }}
-      >
-        <CircularProgress size={100} variant="indeterminate" style={{ outline: 0 }} />
-      </Modal>
+      <LoadingModal isSubmitted={submitted} />
     </Paper>
   )
 }
+
+interface LMProps {
+  isSubmitted: boolean
+}
+
+const LoadingModal: React.FC<LMProps> = ({ isSubmitted }) => (
+  <Modal
+    aria-labelledby="transition-modal-title"
+    aria-describedby="transition-modal-description"
+    open={isSubmitted}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      outline: 0
+    }}
+    disableAutoFocus={true}
+    disableEnforceFocus={true}
+    closeAfterTransition
+    BackdropComponent={Backdrop}
+    BackdropProps={{
+      timeout: 500
+    }}
+  >
+    <CircularProgress size={100} variant="indeterminate" style={{ outline: 0 }} />
+  </Modal>
+)
 
 export default Form
