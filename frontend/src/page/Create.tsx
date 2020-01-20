@@ -1,8 +1,6 @@
 import React, { useState, FormEventHandler, FormEvent, ChangeEventHandler, ChangeEvent, useEffect } from "react"
 import axios, { AxiosError, AxiosResponse } from "axios"
-import MaterialUI from "@material-ui/core"
 import { API_ROOT } from "../setting"
-import { isLoggedIn } from "../utils/isLoggedIn"
 import { History } from "history"
 import { Backdrop, Paper, Grid, TextField, Button, Typography, Modal, CircularProgress } from "@material-ui/core"
 
@@ -46,8 +44,17 @@ const Form: React.FC<FormProps> = ({ history }) => {
     const submitData = new FormData()
     submitData.append("formData", JSON.stringify({ title, author, description }))
     submitData.append("image", imageFile)
-    const token = await getTokenSilently()
-    console.log({ token })
+
+    let token
+    // Auth0 JWTを取得
+    try {
+      token = await getTokenSilently()
+      console.log({ token })
+    } catch (error) {
+      setIsError(true)
+      setErrorMsg("認証エラー")
+      setSubmitted(false)
+    }
     // Postリクエスト
     axios
       .post(`${API_ROOT}/posts`, submitData, {
@@ -119,7 +126,10 @@ const Form: React.FC<FormProps> = ({ history }) => {
     <Paper>
       <Grid container justify="flex-start">
         <form encType="multipart/form-data" onSubmit={handleSubmit} autoComplete="off" style={{ margin: 20, width: "100%" }}>
-          <h1>画像を投稿</h1>
+          <Typography variant="h4" component="h1">
+            画像を投稿
+          </Typography>
+          <br />
 
           <TextField required label="Title" name="title" onChange={handleChange} value={title} variant="outlined" />
           <br />
