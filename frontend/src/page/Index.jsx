@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { PostContainer } from "../containers/PostContainer";
-import _ from "lodash";
-import { Card, CardMedia, CardContent, Typography, Link, Grid } from "@material-ui/core";
-import { Link as RouterLink } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import { PostContainer } from "../containers/PostContainer"
+import _ from "lodash"
+import { Card, CardMedia, CardContent, Typography, Link, Grid } from "@material-ui/core"
+import { Link as RouterLink } from "react-router-dom"
 
-import Pagination from "material-ui-flat-pagination";
+import Pagination from "material-ui-flat-pagination"
 
 export default () => {
-  const { posts, fetch_posts } = PostContainer.useContainer({});
-  const [offset, setOffset] = useState(0);
-  const [perPage, setPerPage] = useState(9);
+  const { posts, fetch_posts } = PostContainer.useContainer({})
+  const [offset, setOffset] = useState(0)
+  const [perPage, setPerPage] = useState(9)
 
   useEffect(() => {
-    fetch_posts();
-  }, []);
+    fetch_posts()
+  }, [])
 
   return (
     <React.Fragment>
@@ -26,20 +26,22 @@ export default () => {
         offset={offset}
         total={Object.keys(posts).length}
         onClick={(e, o) => {
-          setOffset(o);
+          setOffset(o)
         }}
       />
     </React.Fragment>
-  );
-};
+  )
+}
 
 const LayoutGrid = ({ posts, offset, perPage }) => {
-  console.log(posts);
+  console.log(posts)
 
-  const begin = Object.keys(posts).length - offset;
+  const begin = Object.keys(posts).length - offset
   const range = _.filter(posts, (_, index) => {
-    return begin >= index && index > begin - perPage;
-  }).reverse();
+    return begin >= index && index > begin - perPage
+  }).reverse()
+
+  console.log(posts[0].image_src)
 
   return (
     <Grid container spacing={2}>
@@ -62,8 +64,8 @@ const LayoutGrid = ({ posts, offset, perPage }) => {
               </CardContent>
             </Card>
           </Grid>
-        );
+        )
       })}
     </Grid>
-  );
-};
+  )
+}
