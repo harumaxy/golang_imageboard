@@ -167,7 +167,7 @@ func saveImageToBucketObject(image io.Reader, fileName string) string {
 	date := time.Now()
 	secondStr := strconv.Itoa(date.Second())
 	b64FileName := b64.StdEncoding.EncodeToString([]byte(fileName)) // urlセーフにするためにファイル名をbase64 encode
-	objName := secondStr + b64FileName // 名前が同じ画像が上書きされないように、dateの秒数を名前に足す
+	objName := secondStr + b64FileName                              // 名前が同じ画像が上書きされないように、dateの秒数を名前に足す
 	obj := bkt.Object(objName)
 	writer := obj.NewWriter(ctx)
 	// コピー
@@ -175,7 +175,7 @@ func saveImageToBucketObject(image io.Reader, fileName string) string {
 		log.Println("Cloud Strageへの保存が失敗")
 	}
 	// 全てのユーザーに読み取りができるようにアクセス権限を変更
-	if err := obj.ACL().Set(ctx, storage.AllUsers, storage.RoleReader); err != {
+	if err := obj.ACL().Set(ctx, storage.AllUsers, storage.RoleReader); err != nil {
 		log.Println("Access Controle Listの設定に失敗")
 	}
 	// バケットを閉じる
