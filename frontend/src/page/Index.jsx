@@ -41,8 +41,6 @@ const LayoutGrid = ({ posts, offset, perPage }) => {
     return begin >= index && index > begin - perPage
   }).reverse()
 
-  console.log(posts[0].image_src)
-
   return (
     <Grid container spacing={2}>
       {_.map(range, post => {
