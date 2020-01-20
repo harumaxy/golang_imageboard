@@ -1,35 +1,57 @@
-# golang_imageboard
-Golang API Server + React で作成した画像掲示板
+# Golang_Imageboard
+![](https://github.com/harumaxy/golang_imageboard/workflows/Docker%20Image%20CI/badge.svg)
 
+Goで作成した画像掲示板
 
-# プロジェクト構成
+Live Demo<br>
+https://storage.googleapis.com/imageboard-frontpage8821/index.html
 
-go v1.11 から導入されたGo moduleと、  
-create-react-appで生成したwebpackプロジェクトのモノレポ構成です。
+## サーバーサイド
 
-- フロントページ : React + Typescript + Material UI
-- バックエンド : Golang + Docker
+Go 言語
 
+- WebFrameWork : [gin-gonic/gin](https://github.com/gin-gonic/gin)
+- ORM : [jinzhu/gorm](https://github.com/jinzhu/gorm)
 
-# 言語
+## フロントページ
 
-- Typescript : 型安全なAltJs
-- Go言語 : シンプルな構文 & 低依存で高速なシングルバイナリ実行ファイルを出力する
+TypeScript<br>
+`create-react-app`のボイラープレートから作成
 
-# コンセプト
-クラウドネイティブな運用を意識しています。
+- React
+- Axios
+- Material-UI
 
-画像&コメントの投稿を受け付けるサーバーはDockerを採用
+## ユーザー認証
 
-- alpineを利用したミニマムな実行環境(12MB)
-- ステートレスで並行性が高い
-- 環境変数を利用した設定の注入により、再利用性と秘匿性を確保
+IDaaS の Auth0 を使用<br>
+https://auth0.com/
 
-また、ユーザー認証にIDaasのAuth0を利用しています。
+サーバーサイドにセッション情報を保持せず、<br>
+クライアント側に jwt を持たせることでユーザー認証する。
+
+これにより、web サーバーをステートレス化し、スケーラビリティが向上する。
+
+## インフラ
+
+Google Cloud Platform を使用
+
+- Google Cloud Storage
+- Google Kubernetes Engine (GKE)
+- Cloud DNS
+
+## Infrastructure as Code
+
+GKE クラスタのノードをプロビジョニングするのに`Terraform`<br>
+コンテナの管理に`Kubernetes`を使用
+
+## コンテナ
+
+バックエンドサーバーに Docker コンテナを使用<br>
+マルチステージビルドで、実行ファイルを alpine linux を使用して image 化することで<br>
+省サイズの実行環境(約 12MB)
 
 # CI/CD
-Github Actionsによるビルドとデプロイを利用する予定です。
-
-![](https://github.com/harumaxy/golang_imageboard/workflows/Docker%20Image%20CI/badge.svg)
+Github Actionsによるビルドとデプロイ
 
 
