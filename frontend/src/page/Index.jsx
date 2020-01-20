@@ -51,7 +51,7 @@ const LayoutGrid = ({ posts, offset, perPage }) => {
             <Card>
               <CardContent>
                 <Link to={`/posts/${post.ID}`} component={RouterLink}>
-                  <CardMedia image={post.image_src} component="img" alt={post.title} height={window.innerHeight / 4} />
+                  <CardMedia src={`https://${post.image_src}`} component="img" alt={post.title} height={window.innerHeight / 4} />
                 </Link>
                 <Link to={`/posts/${post.ID}`} component={RouterLink}>
                   <Typography gutterBottom variant="h5" component="h2">
