@@ -183,6 +183,7 @@ func saveImageToBucketObject(image io.Reader, fileName string) string {
 		log.Println("バケットオブジェクトのWriteを閉じるのに失敗")
 	}
 
-	return path.Join("https://storage.cloud.google.com/", bucketname, objName)
+	// クラウドのオブジェクトを利用する方のurlは storage.cloud.google.com ではない(googleapiの方)
+	return path.Join("https://storage.googleapis.com/", bucketname, objName)
 
 }
