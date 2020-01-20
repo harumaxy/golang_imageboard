@@ -9,9 +9,11 @@ import (
 	"log"
 	"os"
 	"path"
+	"strconv"
 	"time"
 
 	"cloud.google.com/go/storage"
+	b64 "encoding/base64"
 	"github.com/gin-gonic/gin"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -163,7 +165,9 @@ func saveImageToBucketObject(image io.Reader, fileName string) string {
 	// バケットオブジェクトを取得
 	bkt := client.Bucket(bucketname)
 	date := time.Now()
-	objName := date.String() + fileName // 名前が同じ画像が上書きされないように、dateを名前に足す
+	secondStr := strconv.Itoa(date.Second())
+	b64FileName := b64.StdEncoding.EncodeToString([]byte(fileName))
+	objName := secondStr + b64FileName // 名前が同じ画像が上書きされないように、dateの秒数を名前に足す
 	obj := bkt.Object(objName)
 	writer := obj.NewWriter(ctx)
 	// コピー
