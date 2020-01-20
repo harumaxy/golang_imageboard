@@ -184,6 +184,6 @@ func saveImageToBucketObject(image io.Reader, fileName string) string {
 	}
 
 	// クラウドのオブジェクトを利用する方のurlは storage.cloud.google.com ではない(googleapiの方)
-	return path.Join("https://storage.googleapis.com/", bucketname, objName)
+	return path.Join("storage.googleapis.com", bucketname, objName)
 
 }
