@@ -47,7 +47,7 @@ const Read = (props: any) => {
       <Grid container>
         <Grid item xs={12} md={6}>
           <Container>
-            <img src={post.image_src} alt={post.title} width="100%" />
+            <img src={`https://${post.image_src}`} alt={post.title} width="100%" />
             <Typography variant="h4" component="h1">
               {post.title}
             </Typography>
