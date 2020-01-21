@@ -37,12 +37,11 @@ export default () => {
 }
 
 const LayoutGrid: React.FC<{ posts: Post[]; offset: number; perPage: number }> = ({ posts, offset, perPage }) => {
-  const tail = posts.length - 1 - offset * perPage
+  const tail = posts.length - offset * perPage
   const head = tail - (offset + 1) * perPage
 
+  // tail番目は含まず、直前までスライスする
   const shows = posts.slice(head < 0 ? 0 : head, tail).reverse()
-  console.log({ shows })
-  console.log({ len: posts.length })
 
   return (
     <Grid container spacing={2}>
