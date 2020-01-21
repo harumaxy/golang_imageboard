@@ -4,28 +4,14 @@ import { TextField, Button, FormControl, InputLabel } from "@material-ui/core"
 import { AccountCircle } from "@material-ui/icons"
 
 import { PostContainer } from "../containers/PostContainer"
-import { string } from "prop-types"
 import Axios, { AxiosResponse, AxiosRequestConfig } from "axios"
 import { API_ROOT } from "../setting"
-
-import { isLoggedIn } from "../utils/isLoggedIn"
 import SncakbarContainer from "../containers/SncakbarContainer"
 import { useAuth0 } from "../containers/react-auth0-spa"
 
-type Post = {
-  ID: number
-  CreatedAt: string
-  title: string
-  author: string
-  description: string
-  image_src: string
+import { Post } from "../models/Post"
 
-  // UpdatedAt: string,
-  // DeletedAt: string,
-  // comments: []
-}
-
-const Read = (props: any) => {
+const Read: React.FC = (props: any) => {
   const { params } = props.match
   const id = parseInt(params.id, 10)
   const { posts, fetch_single_post } = PostContainer.useContainer()
