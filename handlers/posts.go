@@ -141,6 +141,7 @@ func handleError(c *gin.Context, err error) {
 	c.JSON(500, gin.H{
 		"message": err.Error(),
 	})
+	os.Exit(1)
 }
 
 // saveImageToBucketObject : CloudStrageにファイルを保存して、image_srcを返す
