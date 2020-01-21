@@ -1,28 +1,32 @@
 import React, { useState, useEffect, ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler } from "react"
 import { Container, Grid, Typography, Paper, Avatar } from "@material-ui/core"
-import { TextField, Button, FormControl, InputLabel } from "@material-ui/core"
+import { TextField, Button } from "@material-ui/core"
 import { AccountCircle } from "@material-ui/icons"
 
 import { PostContainer } from "../containers/PostContainer"
-import Axios, { AxiosResponse, AxiosRequestConfig } from "axios"
+import Axios, { AxiosResponse } from "axios"
 import { API_ROOT } from "../setting"
 import SncakbarContainer from "../containers/SncakbarContainer"
 import { useAuth0 } from "../containers/react-auth0-spa"
-
-import { Post } from "../models/Post"
+import { DeleteButton } from "../components/DeleteButton"
 
 const Read: React.FC = (props: any) => {
   const { params } = props.match
   const id = parseInt(params.id, 10)
   const { posts, fetch_single_post } = PostContainer.useContainer()
-  console.log(posts)
-  const post = (posts as Array<Post>)[id]
-  if (post === undefined) {
+  const { isAuthenticated, user } = useAuth0()
+
+  useEffect(() => {
     fetch_single_post(id)
+  }, [])
+
+  const post = posts.find(post => post.ID === id)
+
+  if (post === undefined) {
     return (
       <React.Fragment>
         <p>loading...</p>
-        <p>if this page is showing a long time, page may be not exist.</p>
+        <p>if this page is showing a long time, the page may does not exist.</p>
       </React.Fragment>
     )
   }
@@ -34,18 +38,24 @@ const Read: React.FC = (props: any) => {
         <Grid item xs={12} md={6}>
           <Container>
             <img src={`https://${post.image_src}`} alt={post.title} width="100%" />
-            <Typography variant="h4" component="h1">
-              {post.title}
-            </Typography>
-            <Typography variant="h6" component="h2">
-              Posted by {post.author}
-            </Typography>
-            <br />
-            <Typography variant="body1" component="p" style={{ whiteSpace: "pre-line", paddingBottom: 10 }}>
-              {post.description}
-            </Typography>
-            <Typography variant="srOnly">{post.image_src}</Typography>
-            <Typography variant="srOnly">{id}</Typography>
+
+            <Grid container alignItems="center" justify="space-between">
+              <Grid item>
+                <Typography variant="h4" component="h1">
+                  {post.title}
+                </Typography>
+                <Typography variant="h6" component="h2">
+                  Posted by {post.author}
+                </Typography>
+                <br />
+                <Typography variant="body1" component="p" style={{ whiteSpace: "pre-line", paddingBottom: 10 }}>
+                  {post.description}
+                </Typography>
+                <Typography variant="srOnly">{post.image_src}</Typography>
+                <Typography variant="srOnly">{id}</Typography>
+              </Grid>
+              <Grid item>{isAuthenticated && user != undefined && user.nickname === post.author ? <DeleteButton {...post} /> : null}</Grid>
+            </Grid>
           </Container>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -91,7 +101,7 @@ const CommentList: React.FC<CommentListProps> = (props: CommentListProps) => {
       <h3>Comments</h3>
       <div style={{ overflow: "scroll", height: 300, border: "solid 1px gray" }}>
         {comments.map((com, index) => (
-          <>
+          <div key={com.ID}>
             <Grid container style={{ margin: 10 }}>
               <Grid item xs={12} sm={6}>
                 <Typography variant="h6">
@@ -104,7 +114,7 @@ const CommentList: React.FC<CommentListProps> = (props: CommentListProps) => {
               <p style={{ whiteSpace: "pre-line" }}>{com.body}</p>
             </Grid>
             <hr />
-          </>
+          </div>
         ))}
       </div>
       <Container>
