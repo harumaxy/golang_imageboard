@@ -11,7 +11,7 @@ import Read from "./page/Read"
 import Lock from "./components/AuthButton"
 import AppBar from "./components/AppBar"
 import SncakbarContainer from "./containers/SncakbarContainer"
-import { PUBLIC_URL, AUTH0_AUDIENCE } from "./setting"
+import { AUTH0_AUDIENCE } from "./setting"
 import { Auth0Provider } from "./containers/react-auth0-spa"
 import { AUTH0_CLIENT_ID, AUTH0_DOMAIN } from "./setting"
 import history from "./utils/history"
@@ -46,7 +46,7 @@ ReactDOM.render(
           background-position: center;
           filter: alpha(opacity=50);
           height: 100vh;
-          background-color: rgba(255, 255, 255, 0.6);
+          background-color: rgba(255, 255, 255, 0.8);
           background-blend-mode: lighten;
         }
       `}
@@ -60,7 +60,7 @@ ReactDOM.render(
     >
       <PostContainer.Provider>
         <SncakbarContainer.Provider>
-          <Router basename={"imageboard-frontpage8821/index.html"}>
+          <Router basename={"/imageboard-frontpage8821/index.html"}>
             <AppBar />
             <div style={{ margin: 10 }}>
               <Switch>
