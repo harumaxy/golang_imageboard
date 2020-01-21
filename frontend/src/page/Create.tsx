@@ -71,7 +71,7 @@ const Form: React.FC<FormProps> = ({ history }) => {
           case 201:
             // Postが終わったらListに戻る
             console.log("successed!")
-            history.push(`${API_ROOT}/posts`)
+            history.push(`/`)
             break
           case 401:
             setIsError(true)
