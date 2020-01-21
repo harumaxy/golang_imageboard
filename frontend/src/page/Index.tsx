@@ -5,15 +5,18 @@ import { Card, CardMedia, CardContent, Typography, Link, Grid } from "@material-
 import { Link as RouterLink } from "react-router-dom"
 
 import Pagination from "material-ui-flat-pagination"
+import { Post } from "../models/Post"
 
 export default () => {
-  const { posts, fetch_posts } = PostContainer.useContainer({})
+  const { posts, fetch_posts } = PostContainer.useContainer()
   const [offset, setOffset] = useState(0)
   const [perPage, setPerPage] = useState(9)
 
   useEffect(() => {
     fetch_posts()
   }, [])
+
+  console.log(posts)
 
   return (
     <React.Fragment>
@@ -24,7 +27,7 @@ export default () => {
       <Pagination
         limit={perPage}
         offset={offset}
-        total={Object.keys(posts).length}
+        total={posts.length}
         onClick={(e, o) => {
           setOffset(o)
         }}
@@ -33,17 +36,17 @@ export default () => {
   )
 }
 
-const LayoutGrid = ({ posts, offset, perPage }) => {
-  console.log(posts)
+const LayoutGrid: React.FC<{ posts: Post[]; offset: number; perPage: number }> = ({ posts, offset, perPage }) => {
+  const tail = posts.length - 1 - offset * perPage
+  const head = tail - (offset + 1) * perPage
 
-  const begin = Object.keys(posts).length - offset
-  const range = _.filter(posts, (_, index) => {
-    return begin >= index && index > begin - perPage
-  }).reverse()
+  const shows = posts.slice(head < 0 ? 0 : head, tail).reverse()
+  console.log({ shows })
+  console.log({ len: posts.length })
 
   return (
     <Grid container spacing={2}>
-      {_.map(range, post => {
+      {shows.map(post => {
         return (
           <Grid item xs={12} sm={4} key={post.ID}>
             <Card>
