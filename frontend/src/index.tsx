@@ -60,7 +60,7 @@ ReactDOM.render(
     >
       <PostContainer.Provider>
         <SncakbarContainer.Provider>
-          <Router>
+          <Router basename={"imageboard-frontpage8821/index.html"}>
             <AppBar />
             <div style={{ margin: 10 }}>
               <Switch>
