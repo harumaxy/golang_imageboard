@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react"
-import Auth0Lock from "auth0-lock"
-import { Button, BottomNavigation } from "@material-ui/core"
+import React, { useEffect } from "react"
+import { Button } from "@material-ui/core"
 import { IconButton, Avatar } from "@material-ui/core"
-import { isLoggedIn } from "../utils/isLoggedIn"
-import { AUTH0_DOMAIN, AUTH0_CLIENT_ID } from "../setting"
 import { MenuItem, Menu } from "@material-ui/core"
 import { Snackbar, Slide } from "@material-ui/core"
 import useReactRouter from "use-react-router"
@@ -12,7 +9,7 @@ import SncakbarContainer from "../containers/SncakbarContainer"
 import { useAuth0 } from "../containers/react-auth0-spa"
 
 const Lock = () => {
-  const { isAuthenticated, user, loading, loginWithPopup } = useAuth0()
+  const { isAuthenticated, user, loginWithPopup } = useAuth0()
   const { isSnackBarOpen, snackbarMsg, setIsSnackBarOpen } = SncakbarContainer.useContainer()
 
   return (
