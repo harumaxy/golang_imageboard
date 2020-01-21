@@ -1,10 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createContainer } from "unstated-next"
 import axios from "axios"
 import _ from "lodash"
 import { API_ROOT } from "../setting"
 import { Post } from "../models/Post"
-import { List } from "@material-ui/core"
 
 const usePostContainer = () => {
   const [posts, setPosts] = useState([] as Post[])
@@ -16,9 +15,8 @@ const usePostContainer = () => {
 
   const fetch_single_post = async (postID: number) => {
     const res = await axios.get(`${API_ROOT}/posts/${postID}`)
-    const newPosts = posts.slice(0, posts.length)
-    const newIndex = newPosts.findIndex(post => post.ID === res.data.ID)
-    newPosts[newIndex] = res.data
+    const newPosts = posts.slice(0, posts.length - 1)
+    newPosts.push(res.data)
     setPosts(newPosts)
   }
 
