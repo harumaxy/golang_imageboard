@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "homepage": "./",
+  "homepage": "storage.googleapis.com/imageboard-frontpage8821/index.html",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
