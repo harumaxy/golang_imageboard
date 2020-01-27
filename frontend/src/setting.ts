@@ -1,4 +1,6 @@
-export const API_ROOT = "http://34.84.103.147";
+export const API_ROOT = "https://golang-imageboard-8821.tk"
+export const PUBLIC_URL = "https://storage.googleapis.com/imageboard-frontpage8821/index.html"
 
-export const AUTH0_DOMAIN = "max-project.auth0.com";
-export const AUTH0_CLIENT_ID = "3B4y2bgrI3Jiz5QxVGGXMOxHspYHNQvp";
+export const AUTH0_DOMAIN = "max-project.auth0.com"
+export const AUTH0_CLIENT_ID = "3B4y2bgrI3Jiz5QxVGGXMOxHspYHNQvp"
+export const AUTH0_AUDIENCE = "https://golang-imageboard-8821.tk"

@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traffic-router
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
+spec:
+  tls:
+    - secretName: ssl-secret
+  # rules:
+  #   - http:
+  #       paths:
+  #         - path: /
+  #           backend:
+  #             serviceName: web-server-service
+  #             servicePort: 80
+  backend:
+    serviceName: web-server-service
+    servicePort: 80
+
+
+# ingressの変更は、他のリソースに比べて反映されにくい気がするので、更新のたびにdelete/applyしたほうがいいかも

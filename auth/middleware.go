@@ -60,7 +60,7 @@ func initMiddleware() {
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 
 			// aud を検証
-			aud := auth0env.AUTH0_CLIENT_ID
+			aud := "https://golang-imageboard-8821.tk"
 			checkAudience := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
 			if !checkAudience {
 				return token, errors.New("Invalid audience.")

@@ -8,3 +8,5 @@ images/
 /.envrc
 
 deploy/terraform/.terraform/*
+
+/.env

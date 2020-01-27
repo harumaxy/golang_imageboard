@@ -28,6 +28,7 @@ func main() {
 
 	authMiddleware := auth.NewAuthMiddleware()
 
+	r.GET("/", func(c *gin.Context) { c.String(200, "server is live") })
 	posts := r.Group("/posts")
 	{
 		pc := handlers.PostController{}

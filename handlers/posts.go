@@ -9,9 +9,11 @@ import (
 	"log"
 	"os"
 	"path"
+	"strconv"
 	"time"
 
 	"cloud.google.com/go/storage"
+	b64 "encoding/base64"
 	"github.com/gin-gonic/gin"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -139,6 +141,7 @@ func handleError(c *gin.Context, err error) {
 	c.JSON(500, gin.H{
 		"message": err.Error(),
 	})
+	os.Exit(1)
 }
 
 // saveImageToBucketObject : CloudStrageにファイルを保存して、image_srcを返す
@@ -163,17 +166,25 @@ func saveImageToBucketObject(image io.Reader, fileName string) string {
 	// バケットオブジェクトを取得
 	bkt := client.Bucket(bucketname)
 	date := time.Now()
-	objName := date.String() + fileName // 名前が同じ画像が上書きされないように、dateを名前に足す
+	secondStr := strconv.Itoa(date.Second())
+	b64FileName := b64.StdEncoding.EncodeToString([]byte(fileName)) // urlセーフにするためにファイル名をbase64 encode
+	objName := secondStr + b64FileName                              // 名前が同じ画像が上書きされないように、dateの秒数を名前に足す
 	obj := bkt.Object(objName)
 	writer := obj.NewWriter(ctx)
 	// コピー
 	if _, err := io.Copy(writer, image); err != nil {
 		log.Println("Cloud Strageへの保存が失敗")
 	}
+	// 全てのユーザーに読み取りができるようにアクセス権限を変更
+	if err := obj.ACL().Set(ctx, storage.AllUsers, storage.RoleReader); err != nil {
+		log.Println("Access Controle Listの設定に失敗")
+	}
+	// バケットを閉じる
 	if err := writer.Close(); err != nil {
 		log.Println("バケットオブジェクトのWriteを閉じるのに失敗")
 	}
 
-	return path.Join("https://storage.cloud.google.com/", bucketname, objName)
+	// クラウドのオブジェクトを利用する方のurlは storage.cloud.google.com ではない(googleapiの方)
+	return path.Join("storage.googleapis.com", bucketname, objName)
 
 }
