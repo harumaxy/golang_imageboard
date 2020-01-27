@@ -38,12 +38,12 @@ jobs:
       env:
         CLI: gsutil
       with:
-        args: rsync -d -R frontend/build gs://imageboard-frontpage8821
+        args: rsync -d -R frontend/build gs://frontpage.golang-imageboard-8821.tk
         
     - name: set Access Control List
       uses: actions-hub/gcloud@master
       env:
         CLI: gsutil
       with:
-        args: acl ch -r -u AllUsers:R gs://imageboard-frontpage8821
+        args: acl ch -r -u AllUsers:R gs://frontpage.golang-imageboard-8821.tk
         
