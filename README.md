@@ -3,6 +3,9 @@
 
 Goで作成した画像掲示板
 
+![golang-imageboard-architecture](https://user-images.githubusercontent.com/15980686/73503873-cc8a4280-4410-11ea-83a4-a0a807ad5f25.png)
+
+
 Live Demo<br>
 https://storage.googleapis.com/imageboard-frontpage8821/index.html
 
