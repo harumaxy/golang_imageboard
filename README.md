@@ -11,6 +11,10 @@ https://frontpage.golang-imageboard-8821.tk
 
 GKEの料金が結構高いので、バックエンドは停止してます。
 
+試してみたい方は、メールにてご連絡ください
+harumaxy@gmail.com
+
+
 ## サーバーサイド
 
 Go 言語
